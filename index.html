@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self' https://*.supabase.co; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
 <meta name="description" content="Turn your saved X posts into a searchable reading library. No account or installation needed for file imports.">
 <title>SaveDesk · Your saved internet</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=20260922-accounts">
 </head>
 <body>
 <div class="shell">
@@ -37,5 +37,5 @@
 <dialog id="tag-dialog" aria-labelledby="tag-title"><form id="tag-form"><div class="dialog-heading"><span class="eyebrow">A place for this idea</span><button type="button" data-close="tag-dialog" aria-label="Close topic editor">✕</button></div><h2 id="tag-title">Edit topics</h2><label for="tag-input">Topics, separated by commas</label><p><input id="tag-input" placeholder="Design, Research, Weekend reads"></p><p id="tag-status" role="status"></p><button type="submit" class="primary">Save topics</button></form></dialog>
 <dialog id="copy-dialog" aria-labelledby="copy-title"><div class="dialog-heading"><span class="eyebrow">Ready to take with you</span><button data-close="copy-dialog" aria-label="Close selected text">✕</button></div><h2 id="copy-title">Copy your selected saves</h2><p>Automatic copying isn’t available in this browser. Select and copy the text below, then paste it into your chat.</p><textarea id="copy-text" aria-label="Selected saves" readonly rows="12"></textarea></dialog>
 <dialog id="account-dialog" aria-labelledby="account-title"><div class="dialog-heading"><span class="eyebrow">Pick up where you left off</span><button data-close="account-dialog" aria-label="Close account">✕</button></div><h2 id="account-title">Your saves. All your devices.</h2><p id="account-name">Your library, wherever you are.</p><div id="account-options"><p>Sign in to keep a private library across your phone, tablet, and computer. Connecting X to import likes and bookmarks is a separate step.</p><div id="provider-buttons" class="provider-buttons"></div><p id="account-unavailable" class="note">Sign-in is not enabled on this site yet. You can still import files, organize your saves, and use backups without an account.</p><details><summary>For site owners</summary><p><a href="https://github.com/SharpMeow/SaveDesk/blob/main/docs/ACCOUNTS.md" target="_blank" rel="noopener noreferrer">Set up sign-in and cloud storage ↗</a></p></details></div><div id="account-signed-in" hidden><p>Your account library is private. Imports and edits in this library are saved online so they can appear on your other devices. Publishing remains a separate choice.</p><p>Device-only saves stay separate until you choose to add them.</p><div class="actions"><button id="bring-device">Add this device’s saves</button><button id="account-signout">Sign out</button></div></div><p id="account-status" role="status"></p></dialog>
-<script type="module" src="app.js"></script>
+<script type="module" src="app.js?v=20260922-accounts"></script>
 </body></html>

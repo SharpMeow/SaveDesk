@@ -273,8 +273,6 @@ async function loadPublicCollection() {
     }
   } catch { message('The shared collection could not be loaded. You can still add your own files.'); }
 }
-await loadPublicCollection();
-
 function deviceLibrary() {
   const stored = localStorage.getItem(key);
   return stored ? parseImport(stored) : [];
@@ -299,6 +297,7 @@ $('bring-device').onclick = () => {
     $('account-status').textContent = 'Device saves added to your account library. Syncing now.';
   } catch (error) { $('account-status').textContent = error.message; }
 };
+await loadPublicCollection();
 try {
   cloud = await openCloud({
     readLocal: () => demo ? [] : items,

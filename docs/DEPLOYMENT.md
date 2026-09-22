@@ -38,3 +38,5 @@ Use a **single instance**. Sessions are in memory, expire within two hours, and 
 Back up your published collection and any browser library you need to retain. Pull the desired version, run `npm ci` and `npm test`, and restart the Node process. Server users will need to reconnect after a restart.
 
 For a smoke check, open the site, search the demo collection, inspect **Get started**, import a fictional ZIP, and verify that X sign-in appears only when the server is configured. Do not claim live sync works based only on automated tests. A real account test requires your app credentials and entitlement.
+
+When changing shipped JavaScript or styles, bump their version query in `index.html`. Static hosts can cache files across deployments; matching entrypoint URLs prevent a new control from loading with an older app script. Recheck the live page in a browser that visited the previous release.
