@@ -17,6 +17,7 @@ export async function readSavesFile(file, source = 'like') {
   try {
     files = unzipSync(new Uint8Array(await file.arrayBuffer()), {filter(entry) {
       if (!/(^|\/)like(?:-part\d+)?\.js$/i.test(entry.name)) return false;
+      if (!Number.isSafeInteger(entry.originalSize) || entry.originalSize < 0 || (entry.compression === 0 && entry.size !== entry.originalSize)) throw Error('Invalid ZIP entry size.');
       bytes += entry.originalSize; count++;
       if (bytes > 50 * MB || count > 100) throw Error('The likes files are too large to import together. Unzip the archive and choose one like.js part at a time.');
       return true;
@@ -26,8 +27,10 @@ export async function readSavesFile(file, source = 'like') {
     throw Error('We could not open this ZIP. Unzip it on your device, then choose data/like.js.');
   }
   if (!Object.keys(files).length) throw Error('No likes file was found in this ZIP. Look for data/like.js in your X archive. Bookmarks may need a separate export.');
-  let items = [];
+  let items = [], actualBytes = 0;
   for (const data of Object.values(files)) {
+    actualBytes += data.length;
+    if (actualBytes > 50 * MB) throw Error('The likes files are too large. Choose one archive part at a time.');
     // Build the entire result before changing the user's library.
     items = mergeItems(items, parseImport(strFromU8(data), 'like'));
   }

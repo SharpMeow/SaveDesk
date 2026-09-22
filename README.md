@@ -29,6 +29,8 @@ No GitHub account, coding, or installation needed. Choose **Get started** on the
 
 No build step, package installation, database, analytics, or external post embeds. A bundled, MIT-licensed ZIP reader handles archive files locally. Imported saves and reading progress live in your browser. OAuth tokens, when used, stay in the Node.js server's memory.
 
+The layout adapts to phones, tablets, foldable screen widths, and larger windows. [Device coverage and testing notes](docs/TESTING.md) describe what has been checked.
+
 **Status: early prototype.** The demo contains fictional saves. Import and OAuth/API behavior have automated tests, but X login and retrieval have not been validated against a live account. Bring your own developer app and API access to use sync. This project has no promised release schedule or hosted login service.
 
 ## Choose how to use it

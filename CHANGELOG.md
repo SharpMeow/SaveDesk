@@ -4,6 +4,11 @@ Changes are recorded here for readers and contributors. Versions below describe 
 
 ## Unreleased
 
+- Improve phone, tablet, foldable-width, and desktop layouts, touch controls, enlarged text, safe-area spacing, short-screen dialogs, and long-post expansion.
+- Process imports in a time-limited worker; validate exact IDs, duplicate records, field limits, and ZIP size metadata.
+- Harden OAuth state handling, session expiry, concurrent sync, login capacity, and browser security headers.
+- Add adversarial import, worker, and server regression tests plus device/testing documentation.
+
 - Add guided onboarding, a plain-language user guide, and a simpler toolbar.
 - Read X archive ZIPs locally, skipping unrelated entries, with a vendored MIT-licensed ZIP reader.
 - Add searchable standalone HTML sharing, author filters, @author/#topic search, a search shortcut, and copying selected saves for an AI chat.

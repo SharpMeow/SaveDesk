@@ -7,6 +7,7 @@ Savedesk is a small browser application with an optional Node.js OAuth/API serve
 | File | Responsibility |
 | --- | --- |
 | `index.html`, `style.css` | Layout, styles, onboarding, and dialogs. |
+| `import-client.mjs`, `import-worker.mjs` | Import worker lifecycle, deadline, and browser message boundary. |
 | `importing.mjs`, `vendor/fflate.mjs` | Local file/ZIP reading with size limits and likes-only selection. |
 | `library.mjs` | Author/topic search, selected context, and escaped standalone HTML exports. |
 | `app.js` | Browser state, filtering, rendering, local persistence, imports/exports, and sync controls. |
@@ -51,8 +52,12 @@ node --check app.js
 node --check server.mjs
 node --check model.mjs
 node --check importing.mjs
+node --check import-client.mjs
+node --check import-worker.mjs
 node --check library.mjs
 git diff --check
 ```
 
 CI runs tests and syntax checks on Node.js 22 and 24. For UI work, use a real browser and fictional files to check import, search, tags, reading state after reload, and narrow layouts. Keep live X tests explicitly separate from fixtures and mocks.
+
+[Adversarial tests and device coverage](TESTING.md) record the browser checks and remaining validation.

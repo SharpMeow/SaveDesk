@@ -1,5 +1,5 @@
-import {parseImport, mergeItems} from './model.mjs';
-import {readSavesFile} from './importing.mjs';
+import {parseImport, mergeItems, normalizeTags} from './model.mjs';
+import {readFileInWorker} from './import-client.mjs';
 import {matchesSearch, buildContext, buildSharedPage} from './library.mjs';
 const $ = id => document.getElementById(id);
 const key = 'savedesk-v1';
@@ -7,6 +7,7 @@ const sample=[['A useful idea deserves more than a bookmark. Give it a place, a 
 let items = sample, demo = true, filter = 'all', page = 0, editing = null;
 let importing = false, syncing = false;
 const selected = new Set();
+const expandedPosts = new Set();
 let xSession = {configured:false, connected:false};
 let cursors = {like:null, bookmark:null}, finished = {like:false, bookmark:false};
 function message(text) { $('status').textContent = text; }
@@ -70,7 +71,21 @@ function render() {
       card.classList.toggle('selected', check.checked); updateSelection();
     };
     label.append(check, element('span', 'Select')); meta.append(author, label);
-    card.append(meta, element('p', item.text, 'text'));
+    const text = element('p', item.text, 'text');
+    text.id = `post-text-${item.id}`;
+    card.append(meta, text);
+    if (item.text.length > 500) {
+      const expand = element('button', '', 'expand-post text-button');
+      expand.setAttribute('aria-controls', text.id);
+      const update = () => {
+        const open = expandedPosts.has(item.id);
+        text.textContent = open ? item.text : `${item.text.slice(0, 500)}…`;
+        expand.textContent = open ? 'Show less' : 'Read full post';
+        expand.setAttribute('aria-expanded', String(open));
+      };
+      expand.onclick = () => { if (expandedPosts.has(item.id)) expandedPosts.delete(item.id); else expandedPosts.add(item.id); update(); };
+      update(); card.append(expand);
+    }
     const tags = element('div', '', 'tags');
     for (const tag of item.tags) tags.append(element('span', tag, 'tag'));
     card.append(tags);
@@ -79,7 +94,7 @@ function render() {
       const link = element('a', 'Open on X ↗'); link.href = item.url; link.target = '_blank'; link.rel = 'noopener noreferrer'; footer.append(link);
     } else footer.append(element('span', 'Example', 'meta'));
     const edit = element('button', 'Topics');
-    edit.onclick = () => { editing = item; $('tag-input').value = item.tags.join(', '); $('tag-dialog').showModal(); };
+    edit.onclick = () => { editing = item; $('tag-status').textContent = ''; $('tag-input').value = item.tags.join(', '); $('tag-dialog').showModal(); };
     const read = element('button', item.read ? '✓ Reviewed' : 'Mark read');
     read.onclick = () => { item.read = !item.read; persist(); render(); };
     buttons.append(edit, read); footer.append(buttons); card.append(footer); $('grid').append(card);
@@ -119,7 +134,7 @@ for (const id of ['add','get-started']) $(id).onclick = openOnboarding;
 $('guide-start').onclick = () => { $('guide').close(); openOnboarding(); };
 $('help').onclick = () => $('guide').showModal();
 for (const id of ['manage','backup-reminder']) $(id).onclick = () => { $('manage-status').textContent = ''; $('manage-dialog').showModal(); };
-$('explore').onclick = () => { $('search').focus(); $('search').scrollIntoView({block:'center', behavior:'smooth'}); };
+$('explore').onclick = () => { $('search').focus(); $('search').scrollIntoView({block:'center', behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}); };
 $('search-key').textContent = navigator.platform.includes('Mac') ? '⌘ K' : 'Ctrl K';
 document.addEventListener('keydown', event => {
   if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k' && !document.querySelector('dialog[open]')) {
@@ -131,7 +146,9 @@ for (const id of ['search','tag','author','sort']) $(id).addEventListener(id ===
 $('prev').onclick = () => { page--; render(); }; $('next').onclick = () => { page++; render(); };
 $('tag-form').onsubmit = event => {
   event.preventDefault();
-  if (editing) { editing.tags = [...new Set($('tag-input').value.split(',').map(x => x.trim()).filter(Boolean))]; persist(); render(); }
+  try {
+    if (editing) { editing.tags = normalizeTags($('tag-input').value.split(',').map(x => x.trim()).filter(Boolean)); persist(); render(); }
+  } catch (error) { $('tag-status').textContent = error.message; return; }
   $('tag-dialog').close();
 };
 $('import').onclick = () => $('file').click();
@@ -139,7 +156,7 @@ $('file').onchange = async () => {
   const file = $('file').files[0]; if (!file || importing) return;
   importing = true; $('import').disabled = true; $('import-status').textContent = 'Reading your file on this device…';
   try {
-    const result = await readSavesFile(file, $('source').value);
+    const result = await readFileInWorker(file, $('source').value);
     items = mergeItems(demo ? [] : items, result.items); demo = false; selected.clear();
     persist(); resetFilters(); $('onboarding').close();
     message(`Your library is ready: ${items.length} unique saves. Try a search or open Unread to start exploring.`);
