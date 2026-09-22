@@ -34,3 +34,25 @@ $('publish').onclick=()=>{if(demo){$('status').textContent='Import your saves fi
 try{const response=await fetch('./collection.json',{cache:'no-cache'});if(response.ok){const data=await response.json();if(Array.isArray(data.items)&&data.items.length){const incoming=parseImport(JSON.stringify(data));items=mergeItems(incoming,demo?[]:items);demo=false;render();}}}catch{$('status').textContent='Public collection could not be loaded. Local imports still work.';}
 
 $('cancel-tags').onclick=()=>$('tag-dialog').close();$('tag-form').onsubmit=e=>{e.preventDefault();if(editing){editing.tags=[...new Set($('tag-input').value.split(',').map(x=>x.trim()).filter(Boolean))];persist();render();}$('tag-dialog').close();};
+let xSession={configured:false,connected:false},syncing=false,cursors={like:null,bookmark:null},finished={like:false,bookmark:false};
+async function checkX(){try{const r=await fetch('./api/session',{cache:'no-store'});if(r.ok&&r.headers.get('content-type')?.includes('application/json'))xSession=await r.json();}catch{}$('connect').textContent=xSession.connected?`Connected @${xSession.user.username}`:'Connect X';$('connect').disabled=xSession.connected;$('sync').hidden=!xSession.connected;$('disconnect').hidden=!xSession.connected;}
+$('close-x-setup').onclick=()=>$('x-setup').close();
+$('connect').onclick=()=>{if(xSession.configured)location.assign('./auth/login');else $('x-setup').showModal();};
+$('disconnect').onclick=async()=>{const r=await fetch('./api/disconnect',{method:'POST'});if(r.ok){xSession={configured:true,connected:false};cursors={like:null,bookmark:null};finished={like:false,bookmark:false};await checkX();$('status').textContent='Disconnected. Previously imported saves remain in this browser.';}else $('status').textContent='Could not disconnect. Please reload and try again.';};
+$('sync').onclick=async()=>{
+ if(syncing)return;syncing=true;$('sync').disabled=true;$('disconnect').disabled=true;let count=0,partial=false;const errors=[];
+ if(finished.like&&finished.bookmark){finished={like:false,bookmark:false};cursors={like:null,bookmark:null};}
+ for(const source of ['like','bookmark']){
+ if(finished[source])continue;
+ try{let pages=0;do{const params=new URLSearchParams({source});if(cursors[source])params.set('cursor',cursors[source]);const r=await fetch(`./api/sync?${params}`,{method:'POST'});const data=await r.json();if(!r.ok)throw Error(data.error||'Sync failed.');partial=partial||data.partial;
+ if(data.items.length){const incoming=parseImport(JSON.stringify(data.items),source);items=mergeItems(demo?[]:items,incoming);demo=false;count+=incoming.length;persist();render();}
+ const previous=cursors[source];cursors[source]=data.next;finished[source]=!data.next;pages++;$('status').textContent=`Imported ${count} records this sync. Fetching ${source==='like'?'likes':'bookmarks'}…`;
+ if(data.next&&data.next===previous)throw Error('X repeated a page cursor. Retry later.');
+ if(pages>=20&&!finished[source])break;
+ }while(!finished[source]);}catch(e){errors.push(`${source==='like'?'Likes':'Bookmarks'}: ${e.message}`);}
+ }
+ const done=finished.like&&finished.bookmark;
+ $('status').textContent=`Imported ${count} records this sync. ${done?'Reached the end of the results X returned.':'Click Sync again to resume remaining pages.'}${partial?' X omitted some unavailable posts.':''} ${errors.join(' ')}`;
+ syncing=false;$('sync').disabled=false;$('disconnect').disabled=false;
+};
+const xParams=new URLSearchParams(location.search);if(xParams.has('x_error')){$('status').textContent='X connection was not completed. Check your app configuration and try Connect X again.';history.replaceState(null,'',location.pathname);}else if(xParams.has('x_connected')){$('status').textContent='Connected to X. Click Sync X saves to import your likes and bookmarks.';history.replaceState(null,'',location.pathname);}await checkX();
