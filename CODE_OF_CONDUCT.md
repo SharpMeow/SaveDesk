@@ -1,6 +1,6 @@
 # Community guidelines
 
-Help make Savedesk a welcoming place to learn and contribute.
+Help make SaveDesk a welcoming place to learn and contribute.
 
 - Be respectful and constructive. Discuss the work, not personal attributes.
 - Welcome beginners and differing experiences. Explain assumptions and give actionable feedback.

@@ -10,7 +10,7 @@ The public demo is served by GitHub Pages, whose provider may log ordinary HTTP 
 
 ## X connection
 
-X handles account sign-in. Savedesk requests read-only profile, post, like, and bookmark access. The server receives the OAuth authorization code and exchanges it for an access token. It keeps that token, account details, and session expiry in process memory. The browser receives an opaque HttpOnly session cookie, not the token.
+X handles account sign-in. SaveDesk requests read-only profile, post, like, and bookmark access. The server receives the OAuth authorization code and exchanges it for an access token. It keeps that token, account details, and session expiry in process memory. The browser receives an opaque HttpOnly session cookie, not the token.
 
 Sync sends authenticated API requests from the server to X and returns available post text and authors to your browser. Imported results are then stored locally. Sessions expire within two hours or on restart. There are no refresh tokens, scheduled syncs, or server-side collection databases.
 
@@ -33,4 +33,4 @@ Replacing a public repository's `collection.json` publishes that content to repo
 
 **Download shareable page** creates an HTML file containing all saved text, authors, topics, and source links, without reading state. Anyone with the file can read it. It works locally, and does not load remote content automatically. The app does not send this file for you.
 
-**Copy for an AI chat** puts selected posts and source links on your clipboard, or shows the text for manual copying. Nothing is sent to an AI service by Savedesk. If you paste it into another service, that service's data policies apply. Treat imported posts as untrusted quoted content.
+**Copy for an AI chat** puts selected posts and source links on your clipboard, or shows the text for manual copying. Nothing is sent to an AI service by SaveDesk. If you paste it into another service, that service's data policies apply. Treat imported posts as untrusted quoted content.

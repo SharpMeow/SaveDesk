@@ -1,19 +1,19 @@
 <p align="center">
-  <img src="docs/assets/savedesk-banner.png" alt="Savedesk: Your saved internet. Saved ideas arranged into an organized library." width="100%">
+  <img src="docs/assets/savedesk-banner.png" alt="SaveDesk: Your saved internet. Saved ideas arranged into an organized library." width="100%">
 </p>
 
-# Savedesk
+# SaveDesk
 
 **A calmer home for your X likes and bookmarks.** Search a compact card grid, organize ideas with topics, and work through an unread queue at your own pace.
 
-[Open Savedesk](https://sharpmeow.github.io/savedesk/) · [Get started](docs/GETTING_STARTED.md) · [Connect X](#connect-x) · [Contribute](CONTRIBUTING.md)
+[Open SaveDesk](https://sharpmeow.github.io/savedesk/) · [Get started](docs/GETTING_STARTED.md) · [Connect X](#connect-x) · [Contribute](CONTRIBUTING.md)
 
 [![CI](https://github.com/SharpMeow/savedesk/actions/workflows/ci.yml/badge.svg)](https://github.com/SharpMeow/savedesk/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-47734f.svg)](LICENSE)
 
 ## Just want to use it?
 
-**[Open Savedesk in your browser →](https://sharpmeow.github.io/savedesk/)**
+**[Open SaveDesk in your browser →](https://sharpmeow.github.io/savedesk/)**
 
 No GitHub account, coding, or installation needed. Choose **Get started** on the site: it explains how to request your X archive and add the downloaded ZIP. You can explore the examples while you wait. Your archive is read on your device, not uploaded.
 
@@ -21,7 +21,7 @@ No GitHub account, coding, or installation needed. Choose **Get started** on the
 
 ## What it does
 
-- Import an X archive ZIP, archive likes files, compatible JSON exports, or a Savedesk backup.
+- Import an X archive ZIP, archive likes files, compatible JSON exports, or a SaveDesk backup.
 - Search post text, `@authors`, and `#topics`. Filter by author, likes, bookmarks, topics, and reading status. Press ⌘/Ctrl+K to search.
 - Merge duplicate posts while preserving their sources, tags, and reviewed status.
 - Connect your own X developer app for read-only, manual likes and bookmarks sync.
@@ -60,7 +60,7 @@ Choose **Add your saves → Choose a file** to bring in your file. Use **What ar
 1. Create an app in the [X Developer Console](https://developer.x.com/) and enable OAuth 2.0 as a **Web App**.
 2. Register the exact local callback URL: `http://localhost:4173/auth/callback`.
 3. Copy `.env.example` to `.env` and fill in your OAuth 2.0 Client ID and Client Secret locally.
-4. Stop any existing Savedesk server, then run `node --env-file=.env server.mjs`.
+4. Stop any existing SaveDesk server, then run `node --env-file=.env server.mjs`.
 5. Open **http://localhost:4173**, choose **Add your saves → Connect X instead**, authorize, then choose **Sync X saves**.
 
 [Full X setup, permissions, and troubleshooting](docs/X_SETUP.md). Your X account needs access and any required credits for the requested API endpoints. Do not put credentials in GitHub or browser code.
@@ -95,7 +95,7 @@ Publishing makes post text, authors, IDs, and tags public. Do not submit your co
 
 ## License and attribution
 
-Savedesk's code and documentation are [MIT licensed](LICENSE). Imported posts and media remain subject to their respective owners' rights; the software license does not relicense them. Savedesk is an independent project, not affiliated with or endorsed by X.
+SaveDesk's code and documentation are [MIT licensed](LICENSE). Imported posts and media remain subject to their respective owners' rights; the software license does not relicense them. SaveDesk is an independent project, not affiliated with or endorsed by X.
 
 The bundled ZIP reader retains its [upstream MIT license](vendor/fflate-LICENSE).
 

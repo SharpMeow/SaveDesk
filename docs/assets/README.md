@@ -13,3 +13,12 @@ The final artwork includes small thematic labels beyond the requested title and 
 The banner was edited with the same built-in tool at the user's request. Edit prompt:
 
 > Edit only the tagline typography in this Savedesk banner. The user likes this illustration, so preserve the entire illustration, title Savedesk, palette, textures, paper cards, shelf, plants, composition, canvas aspect ratio, and all other details. Keep exact tagline text 'Your saved internet.' with a single period. Make the spacing between the three words about 25 percent smaller, and make letter spacing slightly tighter for a more natural, modern, compact reading line. Keep the tagline font size, weight, color, vertical position, and centered alignment under Savedesk. Do not change any other element.
+
+
+## SaveDesk wordmark correction
+
+The banner was edited with the built-in image-generation tool to use **SaveDesk**, with capital S and D, preserving the existing artwork and tight tagline spacing.
+
+Prompt:
+
+> Change only the main large central brand lettering to exactly "SaveDesk" (S a v e D e s k). Keep the same bold modern typography, forest-green color, placement and scale. Preserve "Your saved internet." with its current tight word spacing. Preserve all surrounding cards, cubbies, plant, arrows, category labels, cream background, textures, composition, aspect ratio, lighting, and colors. No additional words or objects.

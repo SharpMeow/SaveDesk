@@ -61,8 +61,8 @@ The end-of-results message means X returned no further page token. It does not g
 | Access denied / 403 | Check read scopes, account/app entitlement, and that the browser origin equals `APP_URL`. |
 | Rate limited / 429 | Wait before retrying. Avoid repeated clicks or parallel sync sessions. |
 | Port already in use | Stop the other process, or change `PORT`, `APP_URL`, and the registered callback consistently. |
-| Missing posts | Compare source exports and API availability. Savedesk cannot recover content X does not return. |
+| Missing posts | Compare source exports and API availability. SaveDesk cannot recover content X does not return. |
 
-**Disconnect X** clears Savedesk's server session; imported saves remain in the browser. To revoke the underlying grant, use X's connected-app settings.
+**Disconnect X** clears SaveDesk's server session; imported saves remain in the browser. To revoke the underlying grant, use X's connected-app settings.
 
 For hosting, continue to [deployment](DEPLOYMENT.md).

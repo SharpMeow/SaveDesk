@@ -1,6 +1,6 @@
 # Testing and device support
 
-Savedesk adapts to the space available, including phones, tablets, laptop and desktop windows, split-screen windows, and folded or unfolded phone viewports. Use an updated browser with JavaScript, module workers, and file downloads enabled. Your library is stored per browser and device; use a backup to move it.
+SaveDesk adapts to the space available, including phones, tablets, laptop and desktop windows, split-screen windows, and folded or unfolded phone viewports. Use an updated browser with JavaScript, module workers, and file downloads enabled. Your library is stored per browser and device; use a backup to move it.
 
 ## Automated checks
 
