@@ -10,7 +10,7 @@ Small, focused contributions are welcome. This is an experimental community proj
 4. Open http://localhost:4173. File import development does not need X credentials.
 5. Run `npm test` and `git diff --check` before opening a pull request.
 
-There are no dependencies to install or build artifacts to generate. `npm test` runs the built-in Node test runner. OAuth tests mock X; they must not call live APIs or require secrets. Tests start loopback servers on available ports.
+There are no dependencies to install or build artifacts to generate. The vendored ZIP reader has its own license and provenance in `vendor/`; retain both when updating it. `npm test` runs the built-in Node test runner. OAuth tests mock X; they must not call live APIs or require secrets. Tests start loopback servers on available ports.
 
 ## What to include
 

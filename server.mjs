@@ -9,7 +9,7 @@ export function createApp({clientId=process.env.X_CLIENT_ID,clientSecret=process
  const base=new URL(appUrl),sessions=new Map(),pending=new Map();
  const redirectUri=new URL('/auth/callback',base).href;
  const cookie=(name,value,age)=>`${name}=${value}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${age}${base.protocol==='https:'?'; Secure':''}`;
- const files={'/':['index.html','text/html'],'/index.html':['index.html','text/html'],'/app.js':['app.js','text/javascript'],'/model.mjs':['model.mjs','text/javascript'],'/collection.json':['collection.json','application/json']};
+ const files={'/':['index.html','text/html'],'/index.html':['index.html','text/html'],'/app.js':['app.js','text/javascript'],'/model.mjs':['model.mjs','text/javascript'],'/collection.json':['collection.json','application/json'],'/style.css':['style.css','text/css'],'/library.mjs':['library.mjs','text/javascript'],'/importing.mjs':['importing.mjs','text/javascript'],'/vendor/fflate.mjs':['vendor/fflate.mjs','text/javascript']};
  const getCookies=req=>Object.fromEntries((req.headers.cookie||'').split(';').map(x=>x.trim().split('=')));
  const send=(res,status,body)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(body));};
  const redirect=(res,path)=>{res.writeHead(302,{Location:path,'Cache-Control':'no-store'});res.end();};

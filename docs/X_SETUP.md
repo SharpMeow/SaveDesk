@@ -39,7 +39,7 @@ Stop any server already using the port, then start:
 node --env-file=.env server.mjs
 ```
 
-`npm start` does not automatically load `.env`; use the command above, or supply environment variables through your process manager. Open **http://localhost:4173**, choose **Connect X**, authorize, then choose **Sync X saves**. Use `localhost` consistently. Opening `127.0.0.1` changes the origin and can break request validation or callback cookies.
+`npm start` does not automatically load `.env`; use the command above, or supply environment variables through your process manager. Open **http://localhost:4173**, choose **Add your saves → Connect X instead**, authorize, then choose **Sync X saves**. Use `localhost` consistently. Opening `127.0.0.1` changes the origin and can break request validation or callback cookies.
 
 The server uses S256 PKCE, one-use state, and an HttpOnly session cookie. Tokens stay in process memory. Sessions expire within two hours and are lost on restart; reconnect when needed. The app does not schedule syncs or refresh access tokens.
 
@@ -53,7 +53,7 @@ The end-of-results message means X returned no further page token. It does not g
 
 | Symptom | What to check |
 | --- | --- |
-| Connect X shows setup instructions | You are on static hosting, or the Node server has no `X_CLIENT_ID`. |
+| Connect X is not shown | You are on static hosting, or the Node server has no `X_CLIENT_ID`. File imports still work. |
 | X rejects the callback | Match scheme, host, port, and `/auth/callback` exactly in both `APP_URL` and the developer app. |
 | Connection not completed | Retry the flow once; check app type, Client ID, Client Secret, and callback. Do not share callback URLs containing codes. |
 | Session expired / 401 | Reconnect; tokens expire and server restarts clear sessions. |

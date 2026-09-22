@@ -16,6 +16,8 @@ Include the affected commit, impact, minimal reproduction with fictional data, a
 - The server uses PKCE, expiring one-use OAuth state, HttpOnly cookies, SameSite=Lax, and origin checks for sync/disconnect requests. HTTPS deployments set Secure cookies.
 - Sessions and tokens are in memory and expire within two hours. Restarting loses them. Disconnect removes the local server session; revoke the app in X to remove its authorization grant.
 - The Node server exposes an explicit file allowlist. Static hosting can expose committed source files, so never commit secrets anywhere in the repository.
+- ZIP parsing uses a locally bundled, MIT-licensed fflate release. Compressed archives are limited to 200 MB and selected likes entries to 50 MB and 100 parts. Other entries are skipped. Updates must preserve the upstream license.
+- Shared HTML escapes imported text and includes no reading-state data. Copying selected posts never submits them to an AI service.
 - Imported text is rendered as text and archive assignments are parsed as JSON, not executed.
 - Browser storage is not encrypted by Savedesk. Use a dedicated origin, a trusted browser profile, and a trusted server operator.
 
