@@ -1,97 +1,88 @@
+<p align="center">
+  <img src="docs/assets/savedesk-banner.png" alt="Savedesk: Your saved internet. Saved ideas arranged into an organized library." width="100%">
+</p>
+
 # Savedesk
 
-A compact, searchable reading library for your X likes and bookmarks. Import your saves, filter by topic, and work through an unread queue.
+**A calmer home for your X likes and bookmarks.** Search a compact card grid, organize ideas with topics, and work through an unread queue at your own pace.
 
-## Run
+[Try the demo](https://sharpmeow.github.io/savedesk/) · [Get started](#quick-start) · [Connect X](#connect-x) · [Contribute](CONTRIBUTING.md)
 
-Run `npm start`, then visit http://localhost:4173. Requires Node.js 20+. No package installation is needed. File imports work without credentials. Run `npm test` to verify the parser and simulated OAuth/API integration.
+[![CI](https://github.com/SharpMeow/savedesk/actions/workflows/ci.yml/badge.svg)](https://github.com/SharpMeow/savedesk/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-47734f.svg)](LICENSE)
 
-## Import
+## What it does
 
-- From an extracted X archive, select `data/like.js` (import each part if split).
-- For bookmarks, import a JSON export with numeric post IDs and choose **Import bookmarks** in the source selector. This app does not obtain a bookmark export for you.
-- Import a Savedesk backup to restore tags and reading state.
+- Import X archive likes, compatible JSON exports, or a Savedesk backup.
+- Search post text, authors, and tags. Filter likes, bookmarks, topics, and reading status.
+- Merge duplicate posts while preserving their sources, tags, and reviewed status.
+- Connect your own X developer app for read-only, manual likes and bookmarks sync.
+- Export a backup, or publish a collection as a static site.
 
-Example JSON:
+No build step, runtime packages, database, analytics, or external post embeds. Imported saves and reading progress live in your browser. OAuth tokens, when used, stay in the Node.js server's memory.
 
-```json
-[{"id":"1234567890123456789","text":"An idea to revisit","author":"example","source":"bookmark","tags":["Research"]}]
+**Status: early prototype.** The demo contains fictional saves. Import and OAuth/API behavior have automated tests, but X login and retrieval have not been validated against a live account. Bring your own developer app and API access to use sync. This project has no promised release schedule or hosted login service.
+
+## Choose how to use it
+
+| Mode | What you need | What works |
+| --- | --- | --- |
+| [Public demo](https://sharpmeow.github.io/savedesk/) or static hosting | A modern browser | File import, search, tags, reading queue, export |
+| Local Node.js server | Node.js 22 or 24 LTS recommended | All file features; optional X login with credentials |
+| Hosted Node.js server | HTTPS host, your X app, environment secrets | X login and sync on your own deployment |
+
+GitHub Pages cannot run the OAuth server. On the demo, **Connect X** explains the setup rather than signing you in.
+
+## Quick start
+
+```sh
+git clone https://github.com/SharpMeow/savedesk.git
+cd savedesk
+npm start
 ```
 
-The parser accepts arrays, `{ "items": [...] }`, and X API `{ "data": [...] }` responses. API author expansions are not currently resolved. Duplicate post IDs merge their sources and tags. Post ID ordering approximates post chronology, not the date you liked or bookmarked something.
+Open **http://localhost:4173**. No `npm install` or credentials are needed for file imports. The code requires Node.js 20+; use a supported LTS version for deployment. Python 3 users can run `npm run start:static` if Node is available, or `python3 -m http.server 4173 --bind 127.0.0.1` directly for static mode.
 
-## Privacy and limits
-
-Imported data stays in browser localStorage. The app does not send imports to a server and does not load external embeds, fonts, analytics, or media. Export regularly: browser data can be cleared or storage can fill. Use a dedicated origin for deployment. Publish only the collection you intend to share. Original account archives can contain unrelated private data and should not be committed.
-
-This is a reading library with file import and optional manual X sync, not an automatic X backup. It cannot recover missing text, deleted posts, media, or entire threads. It cannot guarantee your export contains every historical save. Sample saves are fictional and are replaced by the first import. Tags and reading status on demo items are temporary.
-
-The optional Connect X integration uses read-only OAuth and manual sync. It requires X developer access and a running Node.js server. See the official [bookmark documentation](https://docs.x.com/x-api/posts/bookmarks/introduction), [likes documentation](https://docs.x.com/x-api/posts/likes/introduction), and [archive instructions](https://help.x.com/en/managing-your-account/how-to-download-your-x-archive).
-
-## Publish your collection
-
-The app loads `collection.json` at startup. It starts empty, so visitors see clearly marked demo content until a collection is published.
-
-1. Import your likes/bookmarks and organize their tags.
-2. Choose **Export for publishing**. This exports the saves and tags without reading progress.
-3. Replace `collection.json` in the repository with the downloaded file.
-4. GitHub Pages serves the updated public collection. Visitor imports and reading progress remain local to each browser.
-
-To host on GitHub Pages, choose **Settings → Pages → Deploy from a branch → main / (root)**. No build step is required.
-
-## Getting your first export
-
-In X, go to **Settings and privacy → Your account → Download an archive of your data** and request the archive. After X prepares it, extract it and look for `data/like.js`. Do not upload the entire archive here or to GitHub. Bookmarks require a separate export or a future authenticated API integration. See the official archive link above.
-
+Choose **Import saves** to bring in your file. Use **Import likes / Import bookmarks** to choose the source for unlabelled records. [See formats and examples](docs/IMPORTING.md).
 
 ## Connect X
 
-The code includes **Connect X → authorize → Sync X saves**. Authentication uses OAuth 2.0 authorization code flow with S256 PKCE. X account login has not been verified live because developer credentials are not configured.
+1. Create an app in the [X Developer Console](https://developer.x.com/) and enable OAuth 2.0 as a **Web App**.
+2. Register the exact local callback URL: `http://localhost:4173/auth/callback`.
+3. Copy `.env.example` to `.env` and fill in your OAuth 2.0 Client ID and Client Secret locally.
+4. Stop any existing Savedesk server, then run `node --env-file=.env server.mjs`.
+5. Open **http://localhost:4173**, choose **Connect X**, authorize, then choose **Sync X saves**.
 
-### 1. Create the X developer app
+[Full X setup, permissions, and troubleshooting](docs/X_SETUP.md). Your X account needs access and any required credits for the requested API endpoints. Do not put credentials in GitHub or browser code.
 
-Open the [X Developer Console](https://developer.x.com/). Complete developer enrollment if needed, then create an app. In user authentication settings:
+## Publish your collection
 
-- Enable OAuth 2.0.
-- Choose **Web App** (a confidential client).
-- Set the callback URL to exactly `http://localhost:4173/auth/callback` for local use.
-- Set the website URL to `https://sharpmeow.github.io/savedesk/`.
-- Use read-only permissions. Savedesk requests `tweet.read users.read like.read bookmark.read`, with no posting, direct-message, or write scopes.
-- Copy the **OAuth 2.0 Client ID** and **Client Secret** into your local environment, not the repository. These are different from the OAuth 1.0 API key and secret.
+Import and organize your saves, choose **Export for publishing**, then replace `collection.json` in **your own fork** with that file. Enable GitHub Pages from `main` and `/ (root)`. Reading progress is excluded from the public export.
 
-Your developer account must have access and any required API credits for user lookup, likes, and bookmarks. Check the Developer Console before syncing. Login alone does not grant free or unlimited API access.
+Publishing makes post text, authors, IDs, and tags public. Do not submit your collection to this upstream repository. Keep full X archives and private exports out of Git history. [Deployment instructions](docs/DEPLOYMENT.md) explain static and server hosting.
 
-### 2. Configure and start locally
+## Limits to know
 
-Create an ignored `.env` file in the repository:
+- No guarantee of every historical like or bookmark. X and export files can omit data.
+- Text and author retrieval only; no media downloads, deleted-post recovery, full-thread reconstruction, or automatic background sync.
+- Each sync handles up to 20 pages per source, with up to 100 records per page. Click again to resume; reloading resets cursors and duplicates are merged.
+- OAuth sessions expire within two hours and disappear when the server restarts. Reconnect to continue.
+- Browser storage has limits. Export backups regularly; imports above 50 MB are rejected.
+- Post ID ordering approximates post chronology, not when you saved it. There is no cross-device reading-state sync.
 
-```dotenv
-X_CLIENT_ID=your_oauth2_client_id
-X_CLIENT_SECRET=your_oauth2_client_secret
-APP_URL=http://localhost:4173
-PORT=4173
-```
+## Documentation
 
-Run:
+- [Import formats and backups](docs/IMPORTING.md)
+- [X authentication and troubleshooting](docs/X_SETUP.md)
+- [Deployment](docs/DEPLOYMENT.md)
+- [Architecture and development](docs/ARCHITECTURE.md)
+- [Privacy and data handling](PRIVACY.md)
+- [Security reporting](SECURITY.md)
+- [Contributing](CONTRIBUTING.md) and [community guidelines](CODE_OF_CONDUCT.md)
+- [Changelog](CHANGELOG.md)
 
-```sh
-node --env-file=.env server.mjs
-```
+## License and attribution
 
-Open **http://localhost:4173**, click **Connect X**, authorize the app, then click **Sync X saves**. Use `localhost` consistently; `127.0.0.1` is a different origin for callback and request validation.
+Savedesk's code and documentation are [MIT licensed](LICENSE). Imported posts and media remain subject to their respective owners' rights; the software license does not relicense them. Savedesk is an independent project, not affiliated with or endorsed by X.
 
-Each sync processes up to 20 pages per source, with up to 100 saves per page. Click Sync again to continue. Successful pages are saved immediately. Rate limits, missing API credits, and denied permissions are reported without discarding imported saves. Resume cursors last until the page reloads. Rerunning starts from the beginning and deduplicates by post ID.
-
-### 3. Publish your collection
-
-Use **Export for publishing**, then replace the repo's `collection.json`. Login and syncing do not automatically publish data. The GitHub Pages site can serve the published collection while the authenticated importer runs locally.
-
-### Optional hosted login
-
-Deploy the repository to a Node.js host using `npm start`. Set `HOST=0.0.0.0`, `APP_URL=https://your-app-host.example`, and the two X credentials in the host's secret/environment settings. Register `https://your-app-host.example/auth/callback` in the X app. Use one server instance: sessions are in memory, expire within two hours, and are lost on restart. Reconnect when the session expires. No background sync or refresh tokens are configured.
-
-GitHub Pages serves static files and cannot run this server. Its Connect X button displays setup instructions. Never add the client secret or user tokens to browser JavaScript, `collection.json`, or GitHub.
-
-Disconnect clears the server session but keeps imported browser data. To revoke the app grant itself, use X's connected-app settings. Current sync retrieves available text and authors, not media files or complete threads. Reaching the final API page does not guarantee that X returned every historical save.
-
-OAuth reference: [X authorization code flow](https://docs.x.com/fundamentals/authentication/oauth-2-0/authorization-code).
+The README banner is an AI-generated illustration, not a screenshot. [Artwork provenance and prompt](docs/assets/README.md).
