@@ -6,14 +6,14 @@
 
 **A calmer home for your X likes and bookmarks.** Search a compact card grid, organize ideas with topics, and work through an unread queue at your own pace.
 
-[Open SaveDesk](https://sharpmeow.github.io/savedesk/) · [Get started](docs/GETTING_STARTED.md) · [Connect X](#connect-x) · [Contribute](CONTRIBUTING.md)
+[Open SaveDesk](https://sharpmeow.github.io/SaveDesk/) · [Get started](docs/GETTING_STARTED.md) · [Connect X](#connect-x) · [Contribute](CONTRIBUTING.md)
 
-[![CI](https://github.com/SharpMeow/savedesk/actions/workflows/ci.yml/badge.svg)](https://github.com/SharpMeow/savedesk/actions/workflows/ci.yml)
+[![CI](https://github.com/SharpMeow/SaveDesk/actions/workflows/ci.yml/badge.svg)](https://github.com/SharpMeow/SaveDesk/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-47734f.svg)](LICENSE)
 
 ## Just want to use it?
 
-**[Open SaveDesk in your browser →](https://sharpmeow.github.io/savedesk/)**
+**[Open SaveDesk in your browser →](https://sharpmeow.github.io/SaveDesk/)**
 
 No GitHub account, coding, or installation needed. Choose **Get started** on the site: it explains how to request your X archive and add the downloaded ZIP. You can explore the examples while you wait. Your archive is read on your device, not uploaded.
 
@@ -37,7 +37,7 @@ The layout adapts to phones, tablets, foldable screen widths, and larger windows
 
 | Mode | What you need | What works |
 | --- | --- | --- |
-| [Public demo](https://sharpmeow.github.io/savedesk/) or static hosting | A modern browser | File import, search, tags, reading queue, export |
+| [Public demo](https://sharpmeow.github.io/SaveDesk/) or static hosting | A modern browser | File import, search, tags, reading queue, export |
 | Local Node.js server | Node.js 22 or 24 LTS recommended | All file features; optional X login with credentials |
 | Hosted Node.js server | HTTPS host, your X app, environment secrets | X login and sync on your own deployment |
 
@@ -46,8 +46,8 @@ GitHub Pages cannot run the OAuth server. The demo guides you through file impor
 ## Quick start for self-hosting
 
 ```sh
-git clone https://github.com/SharpMeow/savedesk.git
-cd savedesk
+git clone https://github.com/SharpMeow/SaveDesk.git
+cd SaveDesk
 npm start
 ```
 

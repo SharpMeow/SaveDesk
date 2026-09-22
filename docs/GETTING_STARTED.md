@@ -2,7 +2,7 @@
 
 ## 1. Open SaveDesk
 
-[Open SaveDesk in your browser](https://sharpmeow.github.io/savedesk/). You do not need to download code, create a GitHub account, or install anything. The first cards are fictional examples, so you can explore before adding your own saves.
+[Open SaveDesk in your browser](https://sharpmeow.github.io/SaveDesk/). You do not need to download code, create a GitHub account, or install anything. The first cards are fictional examples, so you can explore before adding your own saves.
 
 ## 2. Get your likes from X
 
