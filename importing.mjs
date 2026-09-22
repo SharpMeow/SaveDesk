@@ -9,7 +9,7 @@ export async function readSavesFile(file, source = 'like') {
   if (!zip) {
     try { return { items: parseImport(await file.text(), source), files: 1 }; }
     catch (error) {
-      if (error instanceof SyntaxError) throw Error('We could not read this file. Choose like.js from your X archive, a Savedesk backup, or a compatible JSON export.');
+      if (error instanceof SyntaxError) throw Error('We could not read this file. Choose like.js from your X archive, a SaveDesk backup, or a compatible JSON export.');
       throw error;
     }
   }

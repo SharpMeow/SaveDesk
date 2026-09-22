@@ -1,31 +1,31 @@
 # Start here: no GitHub experience needed
 
-## 1. Open Savedesk
+## 1. Open SaveDesk
 
-[Open Savedesk in your browser](https://sharpmeow.github.io/savedesk/). You do not need to download code, create a GitHub account, or install anything. The first cards are fictional examples, so you can explore before adding your own saves.
+[Open SaveDesk in your browser](https://sharpmeow.github.io/SaveDesk/). You do not need to download code, create a GitHub account, or install anything. The first cards are fictional examples, so you can explore before adding your own saves.
 
 ## 2. Get your likes from X
 
-In X, open **Settings and privacy → Your account → Download an archive of your data** and request your archive. X will let you know when it is ready to download. This may take time; Savedesk cannot speed it up.
+In X, open **Settings and privacy → Your account → Download an archive of your data** and request your archive. X will let you know when it is ready to download. This may take time; SaveDesk cannot speed it up.
 
 [Read X's archive instructions](https://help.x.com/en/managing-your-account/how-to-download-your-x-archive).
 
 ## 3. Add the file
 
-In Savedesk, choose **Get started** or **Add your saves**, then **Choose a file**. Select the ZIP you downloaded from X. Savedesk reads the likes files locally and skips other archive entries. It does not upload your archive.
+In SaveDesk, choose **Get started** or **Add your saves**, then **Choose a file**. Select the ZIP you downloaded from X. SaveDesk reads the likes files locally and skips other archive entries. It does not upload your archive.
 
 If the ZIP is larger than 200 MB, unzip it on your device, open its **data** folder, and choose **like.js** instead. Individual JS or JSON files must be no larger than 50 MB. Import separate like-part files one at a time if necessary.
 
-Already have a compatible bookmarks export or a Savedesk backup? Choose it in the same place. For an unlabelled bookmarks export, first choose **A bookmarks export** from the dropdown.
+Already have a compatible bookmarks export or a SaveDesk backup? Choose it in the same place. For an unlabelled bookmarks export, first choose **A bookmarks export** from the dropdown.
 
-**Bookmarks:** X archives may not contain them. Savedesk can read compatible bookmark exports, but does not create those exports for you. Direct X sign-in is available only on a deployment whose owner has configured it. You do not need to learn developer setup to try the public site with files.
+**Bookmarks:** X archives may not contain them. SaveDesk can read compatible bookmark exports, but does not create those exports for you. Direct X sign-in is available only on a deployment whose owner has configured it. You do not need to learn developer setup to try the public site with files.
 
 ## 4. Find and organize
 
 - Search words, an `@author`, or a `#topic`. Use the dropdowns to narrow the list.
 - Choose **Topics** on a card to add labels such as Research or Recipes.
 - Choose **Mark read**, then use **Unread** to find what is left.
-- Select a few cards and choose **Copy for an AI chat**. Paste into any chat yourself; Savedesk does not send content automatically.
+- Select a few cards and choose **Copy for an AI chat**. Paste into any chat yourself; SaveDesk does not send content automatically.
 
 Author filters only work when your export contains author names. Some X archive likes have text and IDs without authors.
 
@@ -33,7 +33,7 @@ Author filters only work when your export contains author names. Some X archive 
 
 Choose **Backup & share → Download backup**. Keep the downloaded file somewhere you can find it. Without an account, your library stays in this browser. Backups help you move it or recover it after clearing browser data.
 
-To restore a backup on another device, open Savedesk and choose **Add your saves → Choose a file**, then select the backup. This merges saves rather than deleting anything already there.
+To restore a backup on another device, open SaveDesk and choose **Add your saves → Choose a file**, then select the backup. This merges saves rather than deleting anything already there.
 
 ## 6. Share without GitHub
 

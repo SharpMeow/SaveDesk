@@ -1,4 +1,4 @@
-# Contributing to Savedesk
+# Contributing to SaveDesk
 
 Small, focused contributions are welcome. This is an experimental community project with no guaranteed response time. Open an issue before starting a large change so others can discuss the scope.
 

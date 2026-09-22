@@ -2,7 +2,7 @@
 
 ## Support status
 
-Savedesk is an early prototype. Security fixes target the current `main` branch. There is no dedicated security team, response-time guarantee, or independent security audit.
+SaveDesk is an early prototype. Security fixes target the current `main` branch. There is no dedicated security team, response-time guarantee, or independent security audit.
 
 ## Report a vulnerability
 
@@ -22,7 +22,7 @@ Include the affected commit, impact, minimal reproduction with fictional data, a
 - Pending logins and sessions each have a 256-entry cap. Only one upstream sync request can run per session at a time. These bounds do not replace production rate limiting.
 - Shared HTML escapes imported text and includes no reading-state data. Copying selected posts never submits them to an AI service.
 - Imported text is rendered as text and archive assignments are parsed as JSON, not executed.
-- Browser storage is not encrypted by Savedesk. Use a dedicated origin, a trusted browser profile, and a trusted server operator.
+- Browser storage is not encrypted by SaveDesk. Use a dedicated origin, a trusted browser profile, and a trusted server operator.
 
 ## Optional cloud accounts
 

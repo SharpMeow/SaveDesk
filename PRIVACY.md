@@ -10,7 +10,7 @@ The public demo is served by GitHub Pages, whose provider may log ordinary HTTP 
 
 ## X connection
 
-X handles account sign-in. Savedesk requests read-only profile, post, like, and bookmark access. The server receives the OAuth authorization code and exchanges it for an access token. It keeps that token, account details, and session expiry in process memory. The browser receives an opaque HttpOnly session cookie, not the token.
+X handles account sign-in. SaveDesk requests read-only profile, post, like, and bookmark access. The server receives the OAuth authorization code and exchanges it for an access token. It keeps that token, account details, and session expiry in process memory. The browser receives an opaque HttpOnly session cookie, not the token.
 
 Sync sends authenticated API requests from the server to X and returns available post text and authors to your browser. Imported results are stored in the current library: locally in device-only mode, or locally and in Supabase when signed into a cloud account. Sessions expire within two hours or on restart. The X connection has no refresh tokens or scheduled sync. Its Node server does not store your collection.
 

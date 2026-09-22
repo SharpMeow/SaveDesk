@@ -73,4 +73,4 @@ export function createApp({clientId=process.env.X_CLIENT_ID,clientSecret=process
  }catch(error){send(res,[401,402,403,429].includes(error.status)?error.status:502,{error:error.status?error.message:'Could not complete the X request. Please reconnect or retry.'});}
  });
 }
-if(process.argv[1]===fileURLToPath(import.meta.url)){const port=Number(process.env.PORT)||4173;createApp().listen(port,process.env.HOST||'127.0.0.1',()=>console.log(`Savedesk listening on port ${port}. X login ${process.env.X_CLIENT_ID?'configured':'needs X_CLIENT_ID'}.`));}
+if(process.argv[1]===fileURLToPath(import.meta.url)){const port=Number(process.env.PORT)||4173;createApp().listen(port,process.env.HOST||'127.0.0.1',()=>console.log(`SaveDesk listening on port ${port}. X login ${process.env.X_CLIENT_ID?'configured':'needs X_CLIENT_ID'}.`));}
