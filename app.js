@@ -1,8 +1,11 @@
+import {openCloud, PROVIDERS} from './cloud.mjs';
 import {parseImport, mergeItems, normalizeTags} from './model.mjs';
 import {readFileInWorker} from './import-client.mjs';
 import {matchesSearch, buildContext, buildSharedPage} from './library.mjs';
 const $ = id => document.getElementById(id);
 const key = 'savedesk-v1';
+let cloud = null, account = null, pendingCloudChanges = false, accountGeneration = 0;
+const libraryOwner = () => `${account?.id || 'device'}:${accountGeneration}`;
 const sample=[['A useful idea deserves more than a bookmark. Give it a place, a topic, and a next step.','Design'],['A reading list is most useful when you can actually finish it. Start with five things you want to revisit this week.','Reading'],['Small tools that do one thing well: a local search index, a clear interface, and an export button.','Building'],['Keep a notebook of questions. The best ones tend to connect ideas from completely different fields.','Research'],['Save the explanation that made something click. Add your own note about why it mattered.','Learning'],['A weekend project: turn a pile of saved links into a collection you can browse in a few minutes.','Building']].map(([text,tag],i)=>({id:String(i+1),text,author:'Sample save',sources:[i%2?'like':'bookmark'],tags:[tag],read:false,created_at:'',url:''}));
 let items = sample, demo = true, filter = 'all', page = 0, editing = null;
 let importing = false, syncing = false;
@@ -17,6 +20,7 @@ try {
 } catch { message('We could not load your saved library. Add a backup file to recover it.'); }
 function persist() {
   if (demo) return;
+  if (account) { if (cloud) cloud.changed(); else pendingCloudChanges = true; return; }
   try {
     localStorage.setItem(key, JSON.stringify({items}));
     $('storage-status').hidden = true;
@@ -101,8 +105,8 @@ function render() {
   }
   if (!matches.length) {
     const empty = element('div', '', 'empty');
-    empty.append(element('p', 'No saves match these filters.'));
-    const reset = element('button', 'Show all saves'); reset.onclick = resetFilters;
+    empty.append(element('p', items.length ? 'No saves match these filters.' : 'Your library is ready for its first saves.'));
+    const reset = element('button', items.length ? 'Show all saves' : 'Add your saves'); reset.onclick = items.length ? resetFilters : openOnboarding;
     empty.append(reset); $('grid').append(empty);
   }
   $('page').textContent = `${matches.length} ${matches.length === 1 ? 'save' : 'saves'} · Page ${page + 1} of ${pages}`;
@@ -154,9 +158,11 @@ $('tag-form').onsubmit = event => {
 $('import').onclick = () => $('file').click();
 $('file').onchange = async () => {
   const file = $('file').files[0]; if (!file || importing) return;
+  const owner = libraryOwner();
   importing = true; $('import').disabled = true; $('import-status').textContent = 'Reading your file on this device…';
   try {
     const result = await readFileInWorker(file, $('source').value);
+    if (owner !== libraryOwner()) throw Error('The account changed while reading this file. Choose it again for the current library.');
     items = mergeItems(demo ? [] : items, result.items); demo = false; selected.clear();
     persist(); resetFilters(); $('onboarding').close();
     message(`Your library is ready: ${items.length} unique saves. Try a search or open Unread to start exploring.`);
@@ -185,15 +191,34 @@ $('copy-selected').onclick = async () => {
   catch { $('copy-text').value = text; $('copy-dialog').showModal(); $('copy-text').select(); }
 };
 async function checkX() {
+  const owner = libraryOwner();
+  let session = {configured:false,connected:false};
   try {
     const response = await fetch('./api/session', {cache:'no-store', signal:AbortSignal.timeout(5000)});
-    if (response.ok && response.headers.get('content-type')?.includes('application/json')) xSession = await response.json();
-  } catch {}
+    if (response.ok && response.headers.get('content-type')?.includes('application/json')) session = await response.json();
+    if (owner !== libraryOwner()) return;
+    let boundOwner;
+    try { boundOwner = sessionStorage.getItem('savedesk-x-owner'); } catch {}
+    // Retain a connection through its OAuth redirect, but never carry it into
+    // another cloud account. Older device-only sessions remain compatible.
+    if (session.connected && (boundOwner || 'device') !== (account?.id || 'device')) {
+      session = {configured:session.configured,connected:false};
+      const disconnected = await fetch('./api/disconnect',{method:'POST',signal:AbortSignal.timeout(5000)});
+      if (!disconnected.ok && disconnected.status !== 401) throw Error('Disconnect failed');
+    }
+  } catch { if (owner === libraryOwner()) message('X connection could not be checked. Reconnect X before syncing.'); }
+  if (owner !== libraryOwner()) return;
+  xSession = session;
   $('connect-option').hidden = !xSession.configured || xSession.connected;
   $('connection').hidden = !xSession.connected;
   $('connected-name').textContent = xSession.connected ? `Connected as @${xSession.user.username}` : '';
 }
-$('connect').onclick = () => { if (xSession.configured) location.assign('./auth/login'); };
+$('connect').onclick = () => {
+  if (!xSession.configured) return;
+  try { sessionStorage.setItem('savedesk-x-owner',account?.id || 'device'); }
+  catch { message('Allow this site to use browser storage before connecting X.'); return; }
+  location.assign('./auth/login');
+};
 $('disconnect').onclick = async () => {
   try {
     const response = await fetch('./api/disconnect', {method:'POST'});
@@ -203,7 +228,8 @@ $('disconnect').onclick = async () => {
   } catch { message('We could not disconnect. Check your connection and try again.'); }
 };
 $('sync').onclick = async () => {
-  if (syncing) return;
+  if (syncing || !xSession.connected) return;
+  const owner = libraryOwner();
   syncing = true; $('sync').disabled = true; $('disconnect').disabled = true;
   let count = 0, partial = false; const errors = [];
   if (finished.like && finished.bookmark) { finished = {like:false, bookmark:false}; cursors = {like:null, bookmark:null}; }
@@ -212,9 +238,11 @@ $('sync').onclick = async () => {
     try {
       let pages = 0;
       do {
+        if (owner !== libraryOwner()) throw Error('The account changed. Connect X again for this library.');
         const params = new URLSearchParams({source}); if (cursors[source]) params.set('cursor', cursors[source]);
         const response = await fetch(`./api/sync?${params}`, {method:'POST'}); const data = await response.json();
         if (!response.ok) throw Error(data.error || 'Sync failed.');
+        if (owner !== libraryOwner()) throw Error('The account changed. Connect X again for this library.');
         partial = partial || data.partial;
         if (data.items.length) {
           const incoming = parseImport(JSON.stringify(data.items), source);
@@ -245,4 +273,70 @@ async function loadPublicCollection() {
     }
   } catch { message('The shared collection could not be loaded. You can still add your own files.'); }
 }
-await Promise.all([checkX(), loadPublicCollection()]);
+await loadPublicCollection();
+
+function deviceLibrary() {
+  const stored = localStorage.getItem(key);
+  return stored ? parseImport(stored) : [];
+}
+function restoreDeviceLibrary() {
+  try { const saved = deviceLibrary(); items = saved.length ? saved : sample; demo = !saved.length; }
+  catch { items = sample; demo = true; message('Could not read the device library. Add a backup to recover it.'); }
+  selected.clear(); resetFilters();
+}
+$('account').onclick = () => $('account-dialog').showModal();
+$('cloud-sync').onclick = () => cloud?.sync();
+$('account-signout').onclick = async () => {
+  try { await cloud?.signOut(); $('account-dialog').close(); }
+  catch { $('account-status').textContent = 'Could not sign out. Check your connection and try again.'; }
+};
+$('bring-device').onclick = () => {
+  try {
+    if (!account || !cloud) return;
+    const saved = deviceLibrary();
+    if (!saved.length) { $('account-status').textContent = 'There are no device-only saves to add.'; return; }
+    items = mergeItems(demo ? [] : items, saved); demo = false; persist(); resetFilters();
+    $('account-status').textContent = 'Device saves added to your account library. Syncing now.';
+  } catch (error) { $('account-status').textContent = error.message; }
+};
+try {
+  cloud = await openCloud({
+    readLocal: () => demo ? [] : items,
+    onStatus: text => { $('cloud-status').textContent = text; },
+    onLibrary: saved => {
+      if (!demo && JSON.stringify(items) === JSON.stringify(saved)) return;
+      items = saved; demo = false;
+      if (editing) editing = items.find(item => item.id === editing.id) || null;
+      for (const id of selected) if (!items.some(item => item.id === id)) selected.delete(id);
+      render();
+    },
+    onAccount: user => {
+      account = user; accountGeneration++; selected.clear(); expandedPosts.clear(); editing = null; $('tag-dialog').close(); resetFilters();
+      $('account').textContent = user ? 'My account' : 'Sign in & sync';
+      $('account-name').textContent = user ? (user.email || 'Signed in') : 'Your library, wherever you are.';
+      $('account-options').hidden = !!user;
+      $('account-signed-in').hidden = !user;
+      $('cloud-bar').hidden = !user;
+      $('local-storage-note').textContent = user ? 'Your account library syncs across devices. Keep a backup for an extra copy.' : 'Your imports and reading progress stay in this browser.';
+      if (!user) restoreDeviceLibrary();
+      $('copy-dialog').close(); $('copy-text').value = ''; $('account-status').textContent = '';
+      xSession = {configured:xSession.configured,connected:false};
+      $('connection').hidden = true; $('connect-option').hidden = true;
+      cursors = {like:null,bookmark:null}; finished = {like:false,bookmark:false};
+      if (cloud) void checkX();
+    },
+  });
+  if (cloud) {
+    $('account-unavailable').hidden = true;
+    $('provider-buttons').replaceChildren(...cloud.providers.map(provider => {
+      const button = element('button', `Continue with ${PROVIDERS[provider]}`);
+      button.onclick = async () => { button.disabled = true; try { await cloud.signIn(provider); } catch { $('account-status').textContent = 'Sign-in could not start. Try again or use another enabled provider.'; } finally { button.disabled = false; } };
+      return button;
+    }));
+    if (pendingCloudChanges) { pendingCloudChanges = false; cloud.changed(); }
+  }
+} catch {
+  $('account-unavailable').textContent = 'Account sync is unavailable on this site right now. You can still use files and backups.';
+}
+
+await checkX();

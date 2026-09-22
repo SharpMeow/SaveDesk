@@ -22,7 +22,7 @@ test('non-ASCII and replayed OAuth states fail closed without upstream requests'
 test('static responses deny framing, restrict executable content, and serve worker modules',async t=>{
  const request=await setup(t,()=>{throw Error('Unexpected upstream');});const response=await request('/');
  assert.equal(response.headers.get('x-frame-options'),'DENY');assert.match(response.headers.get('content-security-policy'),/frame-ancestors 'none'/);assert.match(response.headers.get('content-security-policy'),/script-src 'self'/);
- for(const path of ['/import-client.mjs','/import-worker.mjs'])assert.equal((await request(path)).status,200);
+ for(const path of ['/import-client.mjs','/import-worker.mjs','/cloud.mjs','/sync.mjs','/cloud-config.json','/vendor/supabase.mjs'])assert.equal((await request(path)).status,200);
 });
 test('OAuth entry points only accept GET',async t=>{
  const request=await setup(t,()=>{throw Error('Unexpected upstream');});

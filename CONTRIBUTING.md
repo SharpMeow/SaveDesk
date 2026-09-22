@@ -6,11 +6,11 @@ Small, focused contributions are welcome. This is an experimental community proj
 
 1. Fork the repository and clone your fork.
 2. Create a branch for your change.
-3. Use Node.js 22 or 24 LTS and run `npm start`.
+3. Use Node.js 22 or 24 LTS and run `npm ci`, then `npm start`.
 4. Open http://localhost:4173. File import development does not need X credentials.
 5. Run `npm test` and `git diff --check` before opening a pull request.
 
-There are no dependencies to install or build artifacts to generate. The vendored ZIP reader has its own license and provenance in `vendor/`; retain both when updating it. `npm test` runs the built-in Node test runner. OAuth tests mock X; they must not call live APIs or require secrets. Tests start loopback servers on available ports.
+Dependencies are needed for tests and rebuilding the optional Supabase browser client, not for running the shipped static app. Use `npm run build:vendor` after dependency changes and commit the reviewed bundle and notices. Retain all licenses in `vendor/`. `npm test` runs the built-in Node test runner. OAuth tests mock X; they must not call live APIs or require secrets. Tests start loopback servers on available ports.
 
 ## What to include
 

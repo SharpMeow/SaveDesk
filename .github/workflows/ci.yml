@@ -17,6 +17,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
+      - run: npm ci
+      - run: npm run build:vendor
+      - run: git diff --exit-code -- vendor/
       - run: npm test
       - name: Check JavaScript syntax
         run: |
@@ -27,4 +30,6 @@ jobs:
           node --check import-client.mjs
           node --check import-worker.mjs
           node --check library.mjs
+          node --check cloud.mjs
+          node --check sync.mjs
       - run: git diff --check

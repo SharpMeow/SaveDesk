@@ -4,12 +4,13 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "test": "node --test",
     "start": "node server.mjs",
-    "start:static": "python3 -m http.server 4173 --bind 127.0.0.1"
+    "start:static": "python3 -m http.server 4173 --bind 127.0.0.1",
+    "build:vendor": "node scripts/build-vendor.mjs"
   },
   "description": "A searchable reading library for X likes and bookmarks.",
   "license": "MIT",
@@ -27,5 +28,10 @@
     "twitter",
     "x",
     "local-first"
-  ]
+  ],
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "@supabase/supabase-js": "2.117.0",
+    "esbuild": "0.28.2"
+  }
 }

@@ -10,7 +10,7 @@ export function createApp({clientId=process.env.X_CLIENT_ID,clientSecret=process
  if(!['http:','https:'].includes(base.protocol)||base.username||base.password)throw Error('APP_URL must be an HTTP(S) URL without credentials.');
  const redirectUri=new URL('/auth/callback',base).href;
  const cookie=(name,value,age)=>`${name}=${value}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${age}${base.protocol==='https:'?'; Secure':''}`;
- const files={'/':['index.html','text/html'],'/index.html':['index.html','text/html'],'/app.js':['app.js','text/javascript'],'/model.mjs':['model.mjs','text/javascript'],'/collection.json':['collection.json','application/json'],'/style.css':['style.css','text/css'],'/library.mjs':['library.mjs','text/javascript'],'/importing.mjs':['importing.mjs','text/javascript'],'/import-client.mjs':['import-client.mjs','text/javascript'],'/import-worker.mjs':['import-worker.mjs','text/javascript'],'/vendor/fflate.mjs':['vendor/fflate.mjs','text/javascript']};
+ const files={'/':['index.html','text/html'],'/index.html':['index.html','text/html'],'/app.js':['app.js','text/javascript'],'/model.mjs':['model.mjs','text/javascript'],'/collection.json':['collection.json','application/json'],'/style.css':['style.css','text/css'],'/library.mjs':['library.mjs','text/javascript'],'/importing.mjs':['importing.mjs','text/javascript'],'/import-client.mjs':['import-client.mjs','text/javascript'],'/import-worker.mjs':['import-worker.mjs','text/javascript'],'/vendor/fflate.mjs':['vendor/fflate.mjs','text/javascript'],'/cloud.mjs':['cloud.mjs','text/javascript'],'/sync.mjs':['sync.mjs','text/javascript'],'/cloud-config.json':['cloud-config.json','application/json'],'/vendor/supabase.mjs':['vendor/supabase.mjs','text/javascript']};
  const getCookies=req=>Object.fromEntries((req.headers.cookie||'').split(';').map(x=>x.trim().split('=')));
  const send=(res,status,body)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(body));};
  const redirect=(res,path)=>{res.writeHead(302,{Location:path,'Cache-Control':'no-store'});res.end();};
@@ -18,7 +18,7 @@ export function createApp({clientId=process.env.X_CLIENT_ID,clientSecret=process
  return http.createServer(async(req,res)=>{
  res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
  res.setHeader('X-Frame-Options','DENY');
- res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'");
+ res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self' https://*.supabase.co; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'");
  for(const [id,s] of sessions)if(s.expires<=Date.now())sessions.delete(id);
  for(const [id,s] of pending)if(s.expires<=Date.now())pending.delete(id);
  try{

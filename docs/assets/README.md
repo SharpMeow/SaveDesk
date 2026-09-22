@@ -1,6 +1,6 @@
 # Project artwork
 
-`savedesk-banner.png` is a generated editorial illustration for the Savedesk README, created on 2026-09-22 with the built-in image generation tool. It is not a product screenshot and contains no real saved posts. It is included with the project under the repository's MIT license to the extent applicable; no exclusive rights in generated elements are claimed.
+`savedesk-banner.png` is a generated editorial illustration for the SaveDesk README, created on 2026-09-22 with the built-in image generation tool. It is not a product screenshot and contains no real saved posts. It is included with the project under the repository's MIT license to the extent applicable; no exclusive rights in generated elements are claimed.
 
 ## Generation prompt
 
