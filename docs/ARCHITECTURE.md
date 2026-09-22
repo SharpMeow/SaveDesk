@@ -1,6 +1,6 @@
 # Architecture
 
-Savedesk is a small browser application with an optional Node.js OAuth/API server. The shipped browser files run without a build. Optional account mode uses a locally bundled Supabase client and PostgreSQL. Development dependencies support the bundle build and database tests; vendored code retains its licenses.
+SaveDesk is a small browser application with an optional Node.js OAuth/API server. The shipped browser files run without a build. Optional account mode uses a locally bundled Supabase client and PostgreSQL. Development dependencies support the bundle build and database tests; vendored code retains its licenses.
 
 ## Files
 

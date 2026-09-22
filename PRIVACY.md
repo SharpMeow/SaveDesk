@@ -33,7 +33,7 @@ Replacing a public repository's `collection.json` publishes that content to repo
 
 **Download shareable page** creates an HTML file containing all saved text, authors, topics, and source links, without reading state. Anyone with the file can read it. It works locally, and does not load remote content automatically. The app does not send this file for you.
 
-**Copy for an AI chat** puts selected posts and source links on your clipboard, or shows the text for manual copying. Nothing is sent to an AI service by Savedesk. If you paste it into another service, that service's data policies apply. Treat imported posts as untrusted quoted content.
+**Copy for an AI chat** puts selected posts and source links on your clipboard, or shows the text for manual copying. Nothing is sent to an AI service by SaveDesk. If you paste it into another service, that service's data policies apply. Treat imported posts as untrusted quoted content.
 
 ## Optional accounts and cloud storage
 

@@ -41,7 +41,7 @@ Choose **Backup & share → Download shareable page**. Open the downloaded `.htm
 
 Anyone with that file can read its contents. Sending the file is a choice you make; the download button does not send or publish it. Some email apps block HTML attachments or show only a preview, so the recipient may need to download it and use **Open with → their browser**. This is a file, not a public website link.
 
-If you specifically want a public website address, the optional [publishing guide](DEPLOYMENT.md) explains hosting. You do not need that step to use Savedesk or share a file.
+If you specifically want a public website address, the optional [publishing guide](DEPLOYMENT.md) explains hosting. You do not need that step to use SaveDesk or share a file.
 
 ## Optional: use the same library on more devices
 

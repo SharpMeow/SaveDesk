@@ -23,8 +23,8 @@ export async function openCloud({onAccount,onStatus,onLibrary,readLocal,storage=
   const notify=text=>onStatus(text);
   const saveCache=(items,baseline=base)=>{
     if(!user)return;
-    try{storage.setItem(cacheKey(user.id),JSON.stringify({items,base:baseline}));}
-    catch{notify('Device storage is full. Download a backup while you are online.');}
+    try{storage.setItem(cacheKey(user.id),JSON.stringify({items,base:baseline}));return true;}
+    catch{notify('Device storage is unavailable or full. Download a backup before closing this page.');return false;}
   };
   async function sync() {
     if(!user||!sessionToken)return;
@@ -45,12 +45,12 @@ export async function openCloud({onAccount,onStatus,onLibrary,readLocal,storage=
       if(turn!==generation)return;
       const current=readLocal();const changed=JSON.stringify(current)!==JSON.stringify(start);
       const latest=changed?reconcileLibrary(start,current,result.items):result.items;
-      base=result.items;saveCache(latest);onLibrary(latest);notify(changed?'Saving your latest changes…':'Up to date across your devices.');
+      base=result.items;const cached=saveCache(latest);onLibrary(latest);if(cached)notify(changed?'Saving your latest changes…':'Up to date across your devices.');
       queued=queued||changed;
     }catch{if(turn===generation)notify('Could not sync. Your changes stay on this device. Check your connection or choose Sync now.');}
     finally{running=false;if(queued&&user){queued=false;clearTimeout(timer);timer=setTimeout(sync,750);}}
   }
-  function changed() {if(!user)return;saveCache(readLocal());clearTimeout(timer);timer=setTimeout(sync,750);notify('Changes saved here. Waiting to sync…');}
+  function changed() {if(!user)return;const cached=saveCache(readLocal());clearTimeout(timer);timer=setTimeout(sync,750);if(cached)notify('Changes saved here. Waiting to sync…');}
   function accountChanged(session) {
     sessionToken=session?.access_token||null;
     const next=session?.user||null;if(next?.id===user?.id)return;
@@ -60,7 +60,8 @@ export async function openCloud({onAccount,onStatus,onLibrary,readLocal,storage=
     onAccount(user);if(user){onLibrary(cached);timer=setTimeout(sync,0);}
   }
   const {data:{subscription}}=client.auth.onAuthStateChange((_event,session)=>{accountChanged(session);});
-  const {data,error}=await client.auth.getSession();if(error){subscription.unsubscribe();throw error;}accountChanged(data.session);
+  const initialGeneration=generation;
+  const {data,error}=await client.auth.getSession();if(error){subscription.unsubscribe();throw error;}if(generation===initialGeneration)accountChanged(data.session);
   const onFocus=()=>{if(user)sync();};events?.addEventListener('online',onFocus);events?.addEventListener('focus',onFocus);
   return {providers:config.providers,changed,sync,
     dispose(){generation++;user=null;clearTimeout(timer);subscription.unsubscribe();events?.removeEventListener('online',onFocus);events?.removeEventListener('focus',onFocus);},

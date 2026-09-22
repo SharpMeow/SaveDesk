@@ -38,7 +38,7 @@ The layout adapts to phones, tablets, foldable screen widths, and larger windows
 
 | Mode | What you need | What works |
 | --- | --- | --- |
-| [Public demo](https://sharpmeow.github.io/savedesk/) or static hosting | A modern browser | File import, search, tags, reading queue, export |
+| [Public demo](https://sharpmeow.github.io/SaveDesk/) or static hosting | A modern browser | File import, search, tags, reading queue, export |
 | Static site with configured Supabase | Your Supabase project and provider setup | File features plus account sign-in and cross-device library sync |
 | Local Node.js server | Node.js 22 or 24 LTS recommended | All file features; optional X login with credentials |
 | Hosted Node.js server | HTTPS host, your X app, environment secrets | X login and sync on your own deployment |

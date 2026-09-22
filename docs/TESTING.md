@@ -1,6 +1,6 @@
 # Testing and device support
 
-Savedesk adapts to the space available, including phones, tablets, laptop and desktop windows, split-screen windows, and folded or unfolded phone viewports. Use an updated browser with JavaScript, module workers, and file downloads enabled. Device-only libraries are stored per browser; use a backup to move them. Optional account mode syncs a private library across devices.
+SaveDesk adapts to the space available, including phones, tablets, laptop and desktop windows, split-screen windows, and folded or unfolded phone viewports. Use an updated browser with JavaScript, module workers, and file downloads enabled. Device-only libraries are stored per browser; use a backup to move them. Optional account mode syncs a private library across devices.
 
 ## Automated checks
 
@@ -47,3 +47,5 @@ This is a focused engineering security test pass, not an independent penetration
 The suite also tests three-way merges, removed topics, mark-as-unread changes, bounded conflict retries, offline failures, edits during sync, provider redirects, refreshed tokens, and account switching with requests in flight. Cloud-controller tests use a simulated SDK. Database tests execute the real schema in PGlite PostgreSQL and verify account isolation, anonymous denial, direct-write denial, stale revisions, payload bounds, and invalid calls. CI rebuilds the vendored SDK and checks it matches the committed output.
 
 No hosted Supabase project or provider credentials ship with this repository. Live Google/GitHub/Microsoft/Apple OAuth, backend configuration, and two-device cloud syncing still need the [deployment validation steps](ACCOUNTS.md#validate-before-inviting-users).
+
+The account dialog and expanded header were checked again after the account feature at all 13 widths above, including a 280-pixel viewport with enlarged text. The dialog stayed inside the viewport with a 44-pixel close control and no horizontal overflow. These checks used the unconfigured account state; real provider redirects remain unverified.

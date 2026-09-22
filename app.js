@@ -191,15 +191,34 @@ $('copy-selected').onclick = async () => {
   catch { $('copy-text').value = text; $('copy-dialog').showModal(); $('copy-text').select(); }
 };
 async function checkX() {
+  const owner = libraryOwner();
+  let session = {configured:false,connected:false};
   try {
     const response = await fetch('./api/session', {cache:'no-store', signal:AbortSignal.timeout(5000)});
-    if (response.ok && response.headers.get('content-type')?.includes('application/json')) xSession = await response.json();
-  } catch {}
+    if (response.ok && response.headers.get('content-type')?.includes('application/json')) session = await response.json();
+    if (owner !== libraryOwner()) return;
+    let boundOwner;
+    try { boundOwner = sessionStorage.getItem('savedesk-x-owner'); } catch {}
+    // Retain a connection through its OAuth redirect, but never carry it into
+    // another cloud account. Older device-only sessions remain compatible.
+    if (session.connected && (boundOwner || 'device') !== (account?.id || 'device')) {
+      session = {configured:session.configured,connected:false};
+      const disconnected = await fetch('./api/disconnect',{method:'POST',signal:AbortSignal.timeout(5000)});
+      if (!disconnected.ok && disconnected.status !== 401) throw Error('Disconnect failed');
+    }
+  } catch { if (owner === libraryOwner()) message('X connection could not be checked. Reconnect X before syncing.'); }
+  if (owner !== libraryOwner()) return;
+  xSession = session;
   $('connect-option').hidden = !xSession.configured || xSession.connected;
   $('connection').hidden = !xSession.connected;
   $('connected-name').textContent = xSession.connected ? `Connected as @${xSession.user.username}` : '';
 }
-$('connect').onclick = () => { if (xSession.configured) location.assign('./auth/login'); };
+$('connect').onclick = () => {
+  if (!xSession.configured) return;
+  try { sessionStorage.setItem('savedesk-x-owner',account?.id || 'device'); }
+  catch { message('Allow this site to use browser storage before connecting X.'); return; }
+  location.assign('./auth/login');
+};
 $('disconnect').onclick = async () => {
   try {
     const response = await fetch('./api/disconnect', {method:'POST'});
@@ -209,7 +228,7 @@ $('disconnect').onclick = async () => {
   } catch { message('We could not disconnect. Check your connection and try again.'); }
 };
 $('sync').onclick = async () => {
-  if (syncing) return;
+  if (syncing || !xSession.connected) return;
   const owner = libraryOwner();
   syncing = true; $('sync').disabled = true; $('disconnect').disabled = true;
   let count = 0, partial = false; const errors = [];
@@ -254,7 +273,7 @@ async function loadPublicCollection() {
     }
   } catch { message('The shared collection could not be loaded. You can still add your own files.'); }
 }
-await Promise.all([checkX(), loadPublicCollection()]);
+await loadPublicCollection();
 
 function deviceLibrary() {
   const stored = localStorage.getItem(key);
@@ -292,7 +311,7 @@ try {
       render();
     },
     onAccount: user => {
-      const previous = account?.id; account = user; accountGeneration++; selected.clear(); expandedPosts.clear(); editing = null; $('tag-dialog').close(); resetFilters();
+      account = user; accountGeneration++; selected.clear(); expandedPosts.clear(); editing = null; $('tag-dialog').close(); resetFilters();
       $('account').textContent = user ? 'My account' : 'Sign in & sync';
       $('account-name').textContent = user ? (user.email || 'Signed in') : 'Your library, wherever you are.';
       $('account-options').hidden = !!user;
@@ -300,13 +319,11 @@ try {
       $('cloud-bar').hidden = !user;
       $('local-storage-note').textContent = user ? 'Your account library syncs across devices. Keep a backup for an extra copy.' : 'Your imports and reading progress stay in this browser.';
       if (!user) restoreDeviceLibrary();
-      // X access belongs to this browser, not to the cloud identity. Clear a
-      // previous connection on an account transition, including the first login.
-      if (previous !== user?.id && xSession.connected) {
-        xSession = {configured:xSession.configured,connected:false}; $('connection').hidden = true; $('connect-option').hidden = !xSession.configured;
-        fetch('./api/disconnect',{method:'POST',signal:AbortSignal.timeout(5000)}).then(response => { if (!response.ok) throw Error('Disconnect failed'); }).catch(() => message('The previous X connection could not be cleared. Reconnect X before importing into this account.'));
-        cursors = {like:null,bookmark:null}; finished = {like:false,bookmark:false};
-      }
+      $('copy-dialog').close(); $('copy-text').value = ''; $('account-status').textContent = '';
+      xSession = {configured:xSession.configured,connected:false};
+      $('connection').hidden = true; $('connect-option').hidden = true;
+      cursors = {like:null,bookmark:null}; finished = {like:false,bookmark:false};
+      if (cloud) void checkX();
     },
   });
   if (cloud) {
@@ -321,3 +338,5 @@ try {
 } catch {
   $('account-unavailable').textContent = 'Account sync is unavailable on this site right now. You can still use files and backups.';
 }
+
+await checkX();
