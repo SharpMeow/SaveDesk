@@ -12,7 +12,7 @@ Include the affected commit, impact, minimal reproduction with fictional data, a
 
 ## Deployment boundaries
 
-- Client secrets and access tokens belong on the server. `.env` is ignored by Git.
+- X client secrets and X access tokens belong on the server. `.env` is ignored by Git.
 - The server uses PKCE, expiring one-use OAuth state, HttpOnly cookies, SameSite=Lax, and origin checks for sync/disconnect requests. HTTPS deployments set Secure cookies.
 - Sessions and tokens are in memory and expire within two hours. Restarting loses them. Disconnect removes the local server session; revoke the app in X to remove its authorization grant.
 - The Node server exposes an explicit file allowlist. Static hosting can expose committed source files, so never commit secrets anywhere in the repository.
@@ -23,5 +23,11 @@ Include the affected commit, impact, minimal reproduction with fictional data, a
 - Shared HTML escapes imported text and includes no reading-state data. Copying selected posts never submits them to an AI service.
 - Imported text is rendered as text and archive assignments are parsed as JSON, not executed.
 - Browser storage is not encrypted by Savedesk. Use a dedicated origin, a trusted browser profile, and a trusted server operator.
+
+## Optional cloud accounts
+
+The supplied Supabase schema enables per-user read policies and denies direct writes. A narrowly scoped SQL function derives the user from the authenticated session and checks a revision before writing. Never expose a service-role key or remove these policies. The browser accepts only a public key and a hosted Supabase project URL. Sync requests bind to the captured session so account changes cannot send an old library with a new user’s token.
+
+Supabase account access/refresh tokens and per-account caches use browser storage. Protect the origin from injected scripts, keep the vendored SDK current, and explain cache retention on shared devices. The SDK uses PKCE for account OAuth; provider secrets belong in Supabase. Database policy tests run in real PostgreSQL via PGlite, while Auth/provider tests are simulated. Validate your actual deployment before launch. See [account setup](docs/ACCOUNTS.md).
 
 The server is intended for local use or a small deployment you control. It has no durable sessions, application-level rate limiting, multi-instance session sharing, or production abuse controls. Review and add those before offering unrestricted public OAuth access. Server operators must avoid logging authorization codes, cookies, tokens, or imported data in proxies and monitoring tools.

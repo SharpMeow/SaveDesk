@@ -1,6 +1,6 @@
 # Architecture
 
-Savedesk is a small browser application with an optional Node.js OAuth/API server. It has no package installation, build pipeline, or database. The ZIP reader is vendored locally with its license.
+Savedesk is a small browser application with an optional Node.js OAuth/API server. The shipped browser files run without a build. Optional account mode uses a locally bundled Supabase client and PostgreSQL. Development dependencies support the bundle build and database tests; vendored code retains its licenses.
 
 ## Files
 
@@ -13,6 +13,9 @@ Savedesk is a small browser application with an optional Node.js OAuth/API serve
 | `app.js` | Browser state, filtering, rendering, local persistence, imports/exports, and sync controls. |
 | `model.mjs` | Import normalization and duplicate merging, shared with tests. |
 | `server.mjs` | Static file allowlist, OAuth state/session storage, token exchange, and authenticated X reads. |
+| `cloud.mjs`, `cloud-config.json` | Optional provider login, account isolation, local caches, and sync scheduling. |
+| `sync.mjs`, `supabase/schema.sql` | Three-way merge and database revision checks with per-user access policies. |
+| `cloud.test.mjs`, `sync.test.mjs`, `database.test.mjs` | Session races, merge conflicts, and actual PostgreSQL policy/permission tests. |
 | `collection.json` | Optional public collection loaded at startup. Empty upstream. |
 | `model.test.mjs`, `importing.test.mjs`, `library.test.mjs` | Parser, ZIP selection, size limits, merge, search, and safe export regressions with fictional inputs. |
 | `server.test.mjs` | Mocked OAuth/API flows, session behavior, origin checks, and file access boundaries. |
@@ -25,6 +28,7 @@ flowchart LR
     P[Public collection.json] --> B
     B <--> L[Browser localStorage]
     B --> E[Downloaded backup or public export]
+    B <-->|Optional authenticated library sync| C[Supabase Auth and PostgreSQL]
     B -->|User starts login or sync| S[Node.js server]
     S <-->|OAuth and read-only API| X[X]
     S -->|Post text and authors| B
@@ -47,7 +51,9 @@ X responses are normalized to the import model. The browser handles pagination, 
 ## Validation
 
 ```sh
+npm ci
 npm test
+npm run build:vendor
 node --check app.js
 node --check server.mjs
 node --check model.mjs
@@ -55,9 +61,15 @@ node --check importing.mjs
 node --check import-client.mjs
 node --check import-worker.mjs
 node --check library.mjs
+node --check cloud.mjs
+node --check sync.mjs
 git diff --check
 ```
 
 CI runs tests and syntax checks on Node.js 22 and 24. For UI work, use a real browser and fictional files to check import, search, tags, reading state after reload, and narrow layouts. Keep live X tests explicitly separate from fixtures and mocks.
 
 [Adversarial tests and device coverage](TESTING.md) record the browser checks and remaining validation.
+
+## Account sync
+
+The cloud library has its own per-account browser cache and last synced baseline. Revision-checked writes reconcile independent edits and retry up to three times. Requests capture the account token and ignore responses from previous account generations. Edits made during an in-flight sync are rebased and queued again. Requests have a 15-second deadline. Public collections and device-only saves are not automatically copied to a new account. There is no realtime subscription, save deletion, or automatic source-site polling. [Configuration and operational limits](ACCOUNTS.md).

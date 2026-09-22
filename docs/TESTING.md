@@ -1,10 +1,10 @@
 # Testing and device support
 
-Savedesk adapts to the space available, including phones, tablets, laptop and desktop windows, split-screen windows, and folded or unfolded phone viewports. Use an updated browser with JavaScript, module workers, and file downloads enabled. Your library is stored per browser and device; use a backup to move it.
+Savedesk adapts to the space available, including phones, tablets, laptop and desktop windows, split-screen windows, and folded or unfolded phone viewports. Use an updated browser with JavaScript, module workers, and file downloads enabled. Device-only libraries are stored per browser; use a backup to move them. Optional account mode syncs a private library across devices.
 
 ## Automated checks
 
-Run `npm test`. No credentials or network access to X are required. CI runs the suite on Node.js 22 and 24.
+Run `npm ci`, then `npm test`. No credentials or network access to X are required. CI runs the suite on Node.js 22 and 24.
 
 The suite covers import normalization, exact post IDs, duplicate merging, backup round trips, search, escaped exports, ZIP selection and limits, and worker completion, errors, and termination. A real worker test checks ZIP parsing through its message boundary and confirms that a worker stuck in a CPU loop is terminated. Node's worker adapter supplies the browser-style message and File APIs for those integration tests.
 
@@ -41,3 +41,9 @@ Browser interactions covered an actual file-picker import containing hostile HTM
 Real X sign-in and retrieval require a configured developer app and endpoint access. Simulated API tests do not establish that a particular account has that access. Physical iOS/Android devices, Safari/Firefox/Edge, on-screen keyboard behavior, screen readers, and hardware hinges spanning two displays still need direct testing. Foldable coverage here means responsive viewport resizing; it does not claim special hinge-aware or dual-display behavior.
 
 This is a focused engineering security test pass, not an independent penetration-test certification. Keep the deployment boundaries in [SECURITY.md](../SECURITY.md), especially for a publicly accessible OAuth server.
+
+## Account and database checks
+
+The suite also tests three-way merges, removed topics, mark-as-unread changes, bounded conflict retries, offline failures, edits during sync, provider redirects, refreshed tokens, and account switching with requests in flight. Cloud-controller tests use a simulated SDK. Database tests execute the real schema in PGlite PostgreSQL and verify account isolation, anonymous denial, direct-write denial, stale revisions, payload bounds, and invalid calls. CI rebuilds the vendored SDK and checks it matches the committed output.
+
+No hosted Supabase project or provider credentials ship with this repository. Live Google/GitHub/Microsoft/Apple OAuth, backend configuration, and two-device cloud syncing still need the [deployment validation steps](ACCOUNTS.md#validate-before-inviting-users).

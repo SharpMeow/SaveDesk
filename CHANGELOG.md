@@ -4,6 +4,10 @@ Changes are recorded here for readers and contributors. Versions below describe 
 
 ## Unreleased
 
+- Add optional Google, GitHub, Microsoft, and Apple sign-in with Supabase, private cross-device libraries, account-isolated caches, and revision-checked merges.
+- Add backend/provider setup instructions, PostgreSQL policy tests, and account-switching regressions. Account hosting remains unconfigured by default.
+- Document official saved-content routes for GitHub, Reddit, TikTok, Instagram, and other candidates; X remains the implemented default source.
+
 - Improve phone, tablet, foldable-width, and desktop layouts, touch controls, enlarged text, safe-area spacing, short-screen dialogs, and long-post expansion.
 - Process imports in a time-limited worker; validate exact IDs, duplicate records, field limits, and ZIP size metadata.
 - Harden OAuth state handling, session expiry, concurrent sync, login capacity, and browser security headers.

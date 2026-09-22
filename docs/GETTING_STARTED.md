@@ -31,7 +31,7 @@ Author filters only work when your export contains author names. Some X archive 
 
 ## 5. Keep a backup
 
-Choose **Backup & share → Download backup**. Keep the downloaded file somewhere you can find it. Your current library stays in this browser, but clearing browser data or changing devices does not automatically bring it along.
+Choose **Backup & share → Download backup**. Keep the downloaded file somewhere you can find it. Without an account, your library stays in this browser. Backups help you move it or recover it after clearing browser data.
 
 To restore a backup on another device, open Savedesk and choose **Add your saves → Choose a file**, then select the backup. This merges saves rather than deleting anything already there.
 
@@ -42,3 +42,9 @@ Choose **Backup & share → Download shareable page**. Open the downloaded `.htm
 Anyone with that file can read its contents. Sending the file is a choice you make; the download button does not send or publish it. Some email apps block HTML attachments or show only a preview, so the recipient may need to download it and use **Open with → their browser**. This is a file, not a public website link.
 
 If you specifically want a public website address, the optional [publishing guide](DEPLOYMENT.md) explains hosting. You do not need that step to use Savedesk or share a file.
+
+## Optional: use the same library on more devices
+
+On a configured site, choose **Sign in & sync** and use Google, GitHub, Microsoft, or Apple. Sign in to the same account on each device. Your account library is private; imports and edits in it sync online. Use **My account → Add this device’s saves** to bring across saves made before signing in. Keep downloading occasional backups.
+
+If the site says sign-in is not enabled, files and backups still work. That message means the site owner has not configured account storage. You do not need to learn backend setup to use the app. Sign-in does not automatically fetch saves from other services, and X remains the supported content source.

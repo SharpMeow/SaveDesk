@@ -143,3 +143,5 @@ dialog{padding:22px 18px}
 
 
 .expand-post{align-self:flex-start;font-size:13px;margin-top:-10px}
+
+.provider-buttons{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px;margin:20px 0}#cloud-bar{margin-bottom:12px}

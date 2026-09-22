@@ -2,20 +2,20 @@
 
 ## Static site or GitHub Pages
 
-Static hosting supports file imports, search, tags, the reading queue, and exports. It cannot run the X OAuth server.
+Static hosting supports file imports, search, tags, the reading queue, and exports. It cannot run the X OAuth server. It can use optional Supabase accounts and cross-device storage after the owner follows [account setup](ACCOUNTS.md).
 
 1. Fork this repository.
 2. Keep `collection.json` empty for a demo, or replace it with your reviewed **Download website data** file.
 3. In your fork, choose **Settings → Pages → Deploy from a branch → main → / (root)**.
 4. Wait for the Pages deployment to succeed, then open the reported site URL.
 
-The app uses relative asset paths and works at a Pages project path. `collection.json` is fetched on page load. Importing a file or editing tags in the browser does not update GitHub; publish a new export to change the shared collection. Reader progress stays in each browser.
+The app uses relative asset paths and works at a Pages project path. `collection.json` is fetched on page load. Importing a file or editing tags in the browser does not update GitHub; publish a new export to change the shared collection. Reader progress stays in each browser in device-only mode; account mode syncs it privately.
 
 The default Node server's file allowlist does not serve repository documentation or artwork. These are rendered on GitHub and are not required for the app UI.
 
 ## Node.js hosting with X login
 
-Use a supported Node.js LTS release on a host that can keep a single Node process running. There are no dependencies or build steps. The start command is `npm start`.
+Use a supported Node.js LTS release on a host that can keep a single Node process running. The committed app needs no build or installed dependencies to run. Development tests require `npm ci`. The start command is `npm start`.
 
 Configure environment variables in the host's secret settings:
 
@@ -35,6 +35,6 @@ Use a **single instance**. Sessions are in memory, expire within two hours, and 
 
 ## Updating and validating
 
-Back up your published collection and any browser library you need to retain. Pull the desired version, run `npm test`, and restart the Node process. Server users will need to reconnect after a restart.
+Back up your published collection and any browser library you need to retain. Pull the desired version, run `npm ci` and `npm test`, and restart the Node process. Server users will need to reconnect after a restart.
 
 For a smoke check, open the site, search the demo collection, inspect **Get started**, import a fictional ZIP, and verify that X sign-in appears only when the server is configured. Do not claim live sync works based only on automated tests. A real account test requires your app credentials and entitlement.

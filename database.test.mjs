@@ -1,0 +1,24 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {PGlite} from '@electric-sql/pglite';
+const alice='11111111-1111-4111-8111-111111111111',bob='22222222-2222-4222-8222-222222222222';
+test('Postgres enforces account isolation, revision checks, write boundaries and payload limits',async t=>{
+ const db=new PGlite();t.after(()=>db.close());
+ await db.exec(`create role anon;create role authenticated;create schema auth;create table auth.users(id uuid primary key);insert into auth.users values ('${alice}'),('${bob}');create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;grant usage on schema auth to authenticated;grant execute on function auth.uid() to authenticated;`);
+ await db.exec(await readFile(new URL('./supabase/schema.sql',import.meta.url),'utf8'));
+ const as=async(id,role='authenticated')=>{await db.exec('reset role');await db.query("select set_config('request.jwt.claim.sub',$1,false)",[id]);await db.exec(`set role ${role}`);};
+ const save=async(revision,items)=>(await db.query('select public.savedesk_save_library($1,$2::jsonb) as result',[revision,JSON.stringify(items)])).rows[0].result;
+ await as(alice);assert.equal((await save(0,[{id:'123',text:'Alice private'}])).saved,true);
+ await as(bob);assert.equal((await db.query('select * from public.savedesk_libraries')).rows.length,0);
+ await assert.rejects(db.query('update public.savedesk_libraries set items=\'[]\' where user_id=$1',[alice]),/permission denied/);
+ assert.equal((await save(0,[{id:'456',text:'Bob private'}])).saved,true);
+ await as(alice);const mine=(await db.query('select * from public.savedesk_libraries')).rows;assert.equal(mine.length,1);assert.equal(mine[0].user_id,alice);
+ const stale=await save(0,[{id:'999'}]);assert.equal(stale.saved,false);assert.equal(stale.revision,1);assert.equal(stale.items[0].text,'Alice private');
+ assert.equal((await save(1,[{id:'123',text:'New version'}])).revision,2);
+ await assert.rejects(save(2,null),/Expected an array/);
+ await assert.rejects(save(-1,[]),/Invalid library revision/);
+ await assert.rejects(db.query("select public.savedesk_save_library(2,jsonb_build_array(repeat('x',10485761)))"),/limit exceeded/);
+ await as('', 'authenticated');await assert.rejects(save(0,[]),/Sign in/);
+ await as('', 'anon');await assert.rejects(db.query('select * from public.savedesk_libraries'),/permission denied/);await assert.rejects(save(0,[]),/permission denied/);
+});
