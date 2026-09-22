@@ -22,3 +22,19 @@ test('non-ZIP input uses source selection and explains malformed JSON',async()=>
  assert.deepEqual(result.items[0].sources,['bookmark']);
  await assert.rejects(readSavesFile(file('broken.json',strToU8('not json'))),/We could not read this file/);
 });
+test('rejects a stored ZIP entry whose declared size hides its actual size',async()=>{
+ const bytes=zipSync({'data/like.js':archive('123')},{level:0});
+ const view=new DataView(bytes.buffer);for(let i=0;i<bytes.length-4;i++)if(view.getUint32(i,true)===0x02014b50){view.setUint32(i+24,1,true);break;}
+ await assert.rejects(readSavesFile(file('forged.zip',bytes)),/ZIP/);
+});
+test('rejects declared expansion bombs and excess parts before extraction',async()=>{
+ const bytes=zipSync({'data/like.js':archive('123')});const view=new DataView(bytes.buffer);
+ for(let i=0;i<bytes.length-4;i++)if(view.getUint32(i,true)===0x02014b50){view.setUint32(i+24,51*1024*1024,true);break;}
+ await assert.rejects(readSavesFile(file('bomb.zip',bytes)),/too large/);
+ const entries=Object.fromEntries(Array.from({length:101},(_,i)=>[`data/like-part${i}.js`,archive(String(i+1))]));
+ await assert.rejects(readSavesFile(file('parts.zip',zipSync(entries))),/too large/);
+});
+test('a corrupt later archive part never returns a partial import',async()=>{
+ const bytes=zipSync({'data/like.js':archive('123'),'data/like-part1.js':strToU8('not JSON')});
+ await assert.rejects(readSavesFile(file('partial.zip',bytes)));
+});

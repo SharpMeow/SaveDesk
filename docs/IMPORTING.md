@@ -6,7 +6,9 @@ Request an archive from **X → Settings and privacy → Your account → Downlo
 
 Choose **Add your saves → Choose a file** and select the file. ZIP imports read only `like.js` and `like-partN.js` entries and skip unrelated entries. Savedesk strips the standard `window.YTD.…partN =` wrapper and parses JSON. It never executes the JavaScript file. The first successful import replaces the fictional demo collection.
 
-Do not post an account archive to an issue or public repository. Selecting it in Savedesk reads it locally without uploading it. ZIPs above 200 MB are rejected; unzip those on your device and select the likes files. Extracted likes are limited to 50 MB and 100 parts per ZIP. Individual JSON/JS imports are limited to 50 MB.
+Do not post an account archive to an issue or public repository. Selecting it in Savedesk reads it locally without uploading it. ZIPs above 200 MB are rejected; unzip those on your device and select the likes files. Extracted likes are limited to 50 MB and 100 parts per ZIP. Individual JSON/JS imports are limited to 50 MB. File processing runs in a worker and stops after 30 seconds; if an import times out, choose a smaller file or archive part.
+
+Imports and libraries are limited to 100,000 records/saves. Each save supports up to 100,000 text characters, 500 author characters, and 100 topics of up to 200 characters each. Exceeding these limits rejects the import instead of truncating its contents. Post IDs must be positive numeric strings of up to 20 digits. Small safe integer IDs are accepted, but large JSON numbers are rejected because their digits may already be rounded. Duplicate IDs, including zero-padded equivalents, merge into one save.
 
 ## JSON exports
 
