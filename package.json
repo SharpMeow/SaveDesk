@@ -1,1 +1,31 @@
-{"name":"savedesk","version":"0.2.0","private":true,"type":"module","engines":{"node":">=20"},"scripts":{"test":"node --test","start":"node server.mjs","start:static":"python3 -m http.server 4173 --bind 127.0.0.1"}}
+{
+  "name": "savedesk",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "start": "node server.mjs",
+    "start:static": "python3 -m http.server 4173 --bind 127.0.0.1"
+  },
+  "description": "A searchable reading library for X likes and bookmarks.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SharpMeow/savedesk.git"
+  },
+  "homepage": "https://sharpmeow.github.io/savedesk/",
+  "bugs": {
+    "url": "https://github.com/SharpMeow/savedesk/issues"
+  },
+  "keywords": [
+    "bookmarks",
+    "reading-list",
+    "twitter",
+    "x",
+    "local-first"
+  ]
+}

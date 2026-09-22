@@ -5,3 +5,4 @@ node_modules/
 like*.js
 bookmarks*.json
 data/
+!.env.example
