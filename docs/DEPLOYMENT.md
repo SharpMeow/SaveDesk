@@ -5,7 +5,7 @@
 Static hosting supports file imports, search, tags, the reading queue, and exports. It cannot run the X OAuth server.
 
 1. Fork this repository.
-2. Keep `collection.json` empty for a demo, or replace it with your reviewed **Export for publishing** file.
+2. Keep `collection.json` empty for a demo, or replace it with your reviewed **Download website data** file.
 3. In your fork, choose **Settings → Pages → Deploy from a branch → main → / (root)**.
 4. Wait for the Pages deployment to succeed, then open the reported site URL.
 
@@ -37,4 +37,4 @@ Use a **single instance**. Sessions are in memory, expire within two hours, and 
 
 Back up your published collection and any browser library you need to retain. Pull the desired version, run `npm test`, and restart the Node process. Server users will need to reconnect after a restart.
 
-For a smoke check, open the site, search the demo collection, inspect **How to import**, and verify that **Connect X** either shows setup instructions or reaches the configured X authorization page. Do not claim live sync works based only on automated tests. A real account test requires your app credentials and entitlement.
+For a smoke check, open the site, search the demo collection, inspect **Get started**, import a fictional ZIP, and verify that X sign-in appears only when the server is configured. Do not claim live sync works based only on automated tests. A real account test requires your app credentials and entitlement.

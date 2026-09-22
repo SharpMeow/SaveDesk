@@ -2,15 +2,15 @@
 
 ## X archive likes
 
-Request an archive from **X → Settings and privacy → Your account → Download an archive of your data**. Once it is ready, extract it and look for `data/like.js`. Import each part separately if the archive is split. Archive contents vary; do not assume bookmarks are included. [Official archive instructions](https://help.x.com/en/managing-your-account/how-to-download-your-x-archive).
+Request an archive from **X → Settings and privacy → Your account → Download an archive of your data**. Once it is ready, select the downloaded ZIP in Savedesk, or extract it and look for `data/like.js`. Import each part separately if the archive is split. Archive contents vary; do not assume bookmarks are included. [Official archive instructions](https://help.x.com/en/managing-your-account/how-to-download-your-x-archive).
 
-Choose **Import saves** and select the file. Savedesk strips the standard `window.YTD.…partN =` wrapper and parses JSON. It never executes the JavaScript file. The first successful import replaces the fictional demo collection.
+Choose **Add your saves → Choose a file** and select the file. ZIP imports read only `like.js` and `like-partN.js` entries and skip unrelated entries. Savedesk strips the standard `window.YTD.…partN =` wrapper and parses JSON. It never executes the JavaScript file. The first successful import replaces the fictional demo collection.
 
-Do not upload the entire account archive to an issue, a public repository, or the app. It may contain unrelated private data. Files above 50 MB are rejected; use smaller source export parts or prepare smaller JSON arrays locally.
+Do not post an account archive to an issue or public repository. Selecting it in Savedesk reads it locally without uploading it. ZIPs above 200 MB are rejected; unzip those on your device and select the likes files. Extracted likes are limited to 50 MB and 100 parts per ZIP. Individual JSON/JS imports are limited to 50 MB.
 
 ## JSON exports
 
-Accepted top-level shapes are an array, `{ "items": [...] }`, or an X API-style `{ "data": [...] }` object. File extensions are `.json` or `.js`.
+Accepted top-level shapes are an array, `{ "items": [...] }`, or an X API-style `{ "data": [...] }` object. JSON exports use `.json` or `.js`; X archive files can also use `.zip`.
 
 ```json
 [
@@ -43,10 +43,16 @@ Archive records wrapped in `like` or `bookmark` are also recognized. Records wit
 
 Duplicates merge by post ID. Sources and tags are combined, a previous reviewed state is preserved, and missing incoming author/text metadata can retain existing values. Importing an older backup is a merge, not an exact replacement or deletion operation.
 
-Search matches text, authors, and tags. The sidebar filters all, unread, likes, bookmarks, and reviewed items. Topic and search filters combine. Lists show 24 results per page. **Tags** edits a post's topics; **Mark read** moves it out of the unread queue. Marking a reviewed item again makes it unread.
+Search matches text, authors, and tags. Space-separated search terms are combined; `@` targets authors and `#` targets topics. A separate author dropdown filters exact author names. Press ⌘/Ctrl+K to focus search. The sidebar filters all, unread, likes, bookmarks, and reviewed items. Topic and search filters combine. Lists show 24 results per page. **Topics** edits a post's topics; **Mark read** moves it out of the unread queue. Marking a reviewed item again makes it unread.
 
 ## Backup and restore
 
-**Export library** downloads `savedesk-backup.json`, including tags and reading state. Import that file to restore or merge it. A backup does not include credentials, images, or missing full threads. Local browser data can be cleared, and storage space is finite. If a save operation reports a storage problem, export immediately before closing the page.
+**Backup & share → Download backup** downloads `savedesk-backup.json`, including tags and reading state. Import that file to restore or merge it. A backup does not include credentials, images, or missing full threads. Local browser data can be cleared, and storage space is finite. If a save operation reports a storage problem, export immediately before closing the page.
 
-**Export for publishing** downloads `collection.json` without reading progress. Review its contents before committing it to a public fork. Nothing is uploaded by the export button. See [deployment](DEPLOYMENT.md) and [privacy](../PRIVACY.md).
+**Backup & share → Advanced: publish a website → Download website data** downloads `collection.json` without reading progress. Review its contents before committing it to a public fork. Nothing is uploaded by the export button. See [deployment](DEPLOYMENT.md) and [privacy](../PRIVACY.md).
+
+## Share or copy selected context
+
+**Backup & share → Download shareable page** creates a standalone searchable HTML file containing all saves and tags, excluding reading status. Open it to review, then send it yourself. Readers can open it locally in a browser without an account. The page does not make requests until a reader opens an external link.
+
+Select cards and choose **Copy for an AI chat** to copy only the selection, with author names and source links. Clipboard access can be unavailable; in that case a dialog offers selectable text. Savedesk does not contact an AI provider. Selection is temporary and is cleared on reload or import.

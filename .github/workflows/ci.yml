@@ -23,4 +23,6 @@ jobs:
           node --check app.js
           node --check server.mjs
           node --check model.mjs
+          node --check importing.mjs
+          node --check library.mjs
       - run: git diff --check

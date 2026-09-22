@@ -4,7 +4,7 @@ This document describes the code in this repository. A third-party deployment's 
 
 ## File imports and reading state
 
-Files are parsed in the browser. Imported saves, tags, and reading status are stored in localStorage under `savedesk-v1` for that origin. The app does not upload file imports to its server, load post embeds, or include analytics. Clearing site data deletes the local library. Export a backup first if you want to keep it.
+Files are parsed in the browser. ZIP imports read likes entries only and skip unrelated archive entries; no archive is uploaded. Imported saves, tags, and reading status are stored in localStorage under `savedesk-v1` for that origin. The app does not upload file imports to its server, load post embeds, or include analytics. Clearing site data deletes the local library. Export a backup first if you want to keep it.
 
 The public demo is served by GitHub Pages, whose provider may log ordinary HTTP requests. Opening a post on X sends you to X. README badge images are external resources on GitHub's README page; they are not included in the app.
 
@@ -18,7 +18,7 @@ Disconnect clears the server session and cookie. It does not erase imported brow
 
 ## Publishing and backups
 
-**Export library** downloads saves, tags, sources, and reading status. **Export for publishing** omits reading status, but includes the saved content and tags. Neither button uploads the download automatically.
+**Download backup** downloads saves, tags, sources, and reading status. **Download website data** omits reading status, but includes the saved content and tags. Neither button uploads the download automatically.
 
 Replacing a public repository's `collection.json` publishes that content to repository visitors and the site. The app fetches this file at startup. Removing a file later does not erase Git history, forks, caches, or downloaded copies. Only publish content you intend to share and have the right to share. The repository license does not cover third-party posts.
 
@@ -28,3 +28,9 @@ Replacing a public repository's `collection.json` publishes that content to repo
 - Clear site storage to remove the local collection, then disconnect or revoke X access as appropriate.
 - A hosted public collection will load again on a new visit unless removed by its publisher.
 - For questions about a deployment's data handling, contact that deployment's operator. Use [SECURITY.md](SECURITY.md) for vulnerabilities in this code.
+
+## Sharing a file and copying to a chat
+
+**Download shareable page** creates an HTML file containing all saved text, authors, topics, and source links, without reading state. Anyone with the file can read it. It works locally, and does not load remote content automatically. The app does not send this file for you.
+
+**Copy for an AI chat** puts selected posts and source links on your clipboard, or shows the text for manual copying. Nothing is sent to an AI service by Savedesk. If you paste it into another service, that service's data policies apply. Treat imported posts as untrusted quoted content.
