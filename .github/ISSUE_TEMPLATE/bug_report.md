@@ -14,7 +14,7 @@ labels: bug
 
 ## Environment
 
-- Savedesk version or commit:
+- SaveDesk version or commit:
 - Browser and operating system:
 - Node.js version, if applicable:
 - Mode: static / local server / hosted server

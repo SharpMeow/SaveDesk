@@ -15,11 +15,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SharpMeow/savedesk.git"
+    "url": "https://github.com/SharpMeow/SaveDesk.git"
   },
-  "homepage": "https://sharpmeow.github.io/savedesk/",
+  "homepage": "https://sharpmeow.github.io/SaveDesk/",
   "bugs": {
-    "url": "https://github.com/SharpMeow/savedesk/issues"
+    "url": "https://github.com/SharpMeow/SaveDesk/issues"
   },
   "keywords": [
     "bookmarks",

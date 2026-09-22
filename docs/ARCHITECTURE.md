@@ -1,6 +1,6 @@
 # Architecture
 
-Savedesk is a small browser application with an optional Node.js OAuth/API server. It has no package installation, build pipeline, or database. The ZIP reader is vendored locally with its license.
+SaveDesk is a small browser application with an optional Node.js OAuth/API server. It has no package installation, build pipeline, or database. The ZIP reader is vendored locally with its license.
 
 ## Files
 
