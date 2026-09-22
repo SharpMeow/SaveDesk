@@ -9,7 +9,7 @@ Run `npm start`, then visit http://localhost:4173. Requires Python 3. No package
 ## Import
 
 - From an extracted X archive, select `data/like.js` (import each part if split).
-- For bookmarks, import a JSON export with numeric post IDs and choose `bookmark` at the import prompt. This app does not obtain a bookmark export for you.
+- For bookmarks, import a JSON export with numeric post IDs and choose **Import bookmarks** in the source selector. This app does not obtain a bookmark export for you.
 - Import a Savedesk backup to restore tags and reading state.
 
 Example JSON:
